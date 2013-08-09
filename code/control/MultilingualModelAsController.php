@@ -11,7 +11,12 @@ class MultilingualModelAsController extends ModelAsController {
         $this->pushCurrent();
         
         //Get the local from the language param
-        $locale=i18n::get_locale_from_lang($request->param('Language'));
+        if(MultilingualRootURLController::get_use_locale_url()) {
+            $locale=$request->param('Language');
+        }else {
+            $locale=i18n::get_locale_from_lang($request->param('Language'));
+        }
+        
         if(in_array($locale, Translatable::get_allowed_locales())) {
             //Set the current locale and remember it
             Cookie::set('language', $request->param('Language'));
@@ -104,7 +109,12 @@ class MultilingualModelAsController extends ModelAsController {
     
         // Enforce current language setting to the loaded SiteTree object
         if(class_exists('Translatable') && $sitetree->Locale) {
-            Cookie::set('language', i18n::get_lang_from_locale($sitetree->Locale));
+            if(MultilingualRootURLController::get_use_locale_url()) {
+                Cookie::set('language', $sitetree->Locale);
+            }else {
+                Cookie::set('language', i18n::get_lang_from_locale($sitetree->Locale));
+            }
+            
             Translatable::set_current_locale($sitetree->Locale);
         }
     

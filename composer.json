@@ -2,7 +2,7 @@
     "name": "webbuilders-group/silverstripe-translatablerouting",
     "description": "Extends SilverStripe Translatable module and replaces routing to enable multi-lingual urls",
     "type": "silverstripe-module",
-    "keywords": ["silverstripe", "translatable", "multilingual"],
+    "keywords": ["silverstripe", "cms", "i18n", "localization", "globalization", "multilingual"],
     "authors": [
         {
             "name": "Ed Chipman",

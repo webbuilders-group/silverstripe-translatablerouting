@@ -7,7 +7,7 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 * Ed Chipman ([UndefinedOffset](https://github.com/UndefinedOffset))
 
 ## Requirements
-* SilverStripe 3.0.x
+* SilverStripe CMS 3.0.x
 * SilverStripe Translatable 1.0.x
 * SilverStripe Google Sitemaps for 3.0
 
@@ -27,7 +27,7 @@ You must add the following methods to your Page.php for this module to function 
  * @return {string}
  */
 public function Link($action=null) {
-    return Controller::join_links(Director::baseURL(), i18n::get_lang_from_locale($this->Locale), $this->RelativeLink($action));
+    return Controller::join_links(Director::baseURL(), (MultilingualRootURLController::get_use_locale_url() ? $this->Locale:i18n::get_lang_from_locale($this->Locale)), $this->RelativeLink($action));
 }
 
 /**
@@ -52,12 +52,10 @@ public function RelativeLink($action=null) {
 
     return Controller::join_links($base, '/', $action);
 }
+```
 
-/**
- * Returns the language based on the locale
- * @return {string} Language from the locale
- */
-public function getLang() {
-    return i18n::get_lang_from_locale($this->Locale);
-}
+#### Locale URL's
+If you want to use locale's (for example en_US) as your url pattern instead of just languages you need to add this to your mysite/_config.php
+```php
+MultilingualRootURLController::set_use_locale_url(true);
 ```
