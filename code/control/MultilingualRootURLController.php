@@ -12,6 +12,15 @@ class MultilingualRootURLController extends RootURLController {
         if($language=$request->param('Language')) {
             if(self::get_use_locale_url()) {
                 $locale=$language;
+            }else if(strpos($request->param('Language'), '_')!==false) {
+                //Locale not found 404
+                if($response=ErrorPage::response_for(404)) {
+                    return $response;
+                }else {
+                    $this->httpError(404, 'The requested page could not be found.');
+                }
+                
+                return $this->response;
             }else {
                 $locale=i18n::get_locale_from_lang($language);
             }

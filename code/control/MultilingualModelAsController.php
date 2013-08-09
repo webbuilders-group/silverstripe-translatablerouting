@@ -13,6 +13,15 @@ class MultilingualModelAsController extends ModelAsController {
         //Get the local from the language param
         if(MultilingualRootURLController::get_use_locale_url()) {
             $locale=$request->param('Language');
+        }else if(strpos($request->param('Language'), '_')!==false) {
+            //Locale not found 404
+            if($response=ErrorPage::response_for(404)) {
+                return $response;
+            }else {
+                $this->httpError(404, 'The requested page could not be found.');
+            }
+            
+            return $this->response;
         }else {
             $locale=i18n::get_locale_from_lang($request->param('Language'));
         }
