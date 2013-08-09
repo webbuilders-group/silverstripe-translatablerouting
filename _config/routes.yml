@@ -1,0 +1,16 @@
+---
+Name: modelascontrollerroutes
+After: cms/routes#modelascontrollerroutes
+---
+Director:
+    rules:
+        '': 'MultilingualRootURLController'
+        '$Language/$URLSegment//$Action/$ID/$OtherID': 'MultilingualModelAsController'
+
+---
+Name: multilingualsitemap
+After: '#googlesitemaproutes'
+---
+Director:
+    rules:
+        'sitemap.xml': 'MultilingualGoogleSitemap'
