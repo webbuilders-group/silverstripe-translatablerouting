@@ -19,7 +19,7 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 
 
 ## Usage
-You must add the following methods to your Page.php for this module to function properly.
+You must add the following methods to your Page class for this module to function properly.
 ```php
 /**
  * Return the link for this {@link SiteTree} object, with the {@link Director::baseURL()} included.
@@ -51,6 +51,29 @@ public function RelativeLink($action=null) {
     }
 
     return Controller::join_links($base, '/', $action);
+}
+```
+
+As well for your Page_Controller class you must add this for this module to function properly.
+``php
+public function init() {
+    parent::init();
+    
+    
+    // If we've accessed the homepage as /home/, then we should redirect to /.
+    if($this->dataRecord && $this->dataRecord instanceof SiteTree && MultilingualRootURLController::should_be_on_root($this->dataRecord) && (!isset($this->urlParams['Action']) || !$this->urlParams['Action']) && !$_POST && !$_FILES && !$this->redirectedTo()) {
+        $getVars=$_GET;
+        unset($getVars['url']);
+        
+        if($getVars) {
+            $url=i18n::get_lang_from_locale($this->Locale).'/?'.http_build_query($getVars);
+        }else {
+            $url=i18n::get_lang_from_locale($this->Locale).'/';
+        }
+        
+        $this->redirect($url, 301);
+        return;
+    }
 }
 ```
 
