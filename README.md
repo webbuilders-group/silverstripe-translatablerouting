@@ -9,7 +9,6 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 ## Requirements
 * SilverStripe CMS 3.0.x
 * SilverStripe Translatable 1.0.x
-* SilverStripe Google Sitemaps for 3.0
 
 
 ## Installation
@@ -55,7 +54,7 @@ public function RelativeLink($action=null) {
 ```
 
 As well for your Page_Controller class you must add this for this module to function properly.
-``php
+```php
 public function init() {
     parent::init();
     
@@ -66,9 +65,9 @@ public function init() {
         unset($getVars['url']);
         
         if($getVars) {
-            $url=i18n::get_lang_from_locale($this->Locale).'/?'.http_build_query($getVars);
+            $url=(MultilingualRootURLController::get_use_locale_url() ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/?'.http_build_query($getVars);
         }else {
-            $url=i18n::get_lang_from_locale($this->Locale).'/';
+            $url=(MultilingualRootURLController::get_use_locale_url() ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/';
         }
         
         $this->redirect($url, 301);
@@ -82,3 +81,6 @@ If you want to use locale's (for example en_US) as your url pattern instead of j
 ```php
 MultilingualRootURLController::set_use_locale_url(true);
 ```
+
+## Notes
+Translatable Routing has support for the SilverStripe Google Sitemaps module for 3.0, which will add support for the multi-lingual site per [google's documentation](https://support.google.com/webmasters/answer/2620865?hl=en) on doing this.

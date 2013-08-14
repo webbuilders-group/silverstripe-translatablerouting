@@ -10,6 +10,8 @@ Director:
 ---
 Name: multilingualsitemap
 After: '#googlesitemaproutes'
+Only:
+  moduleexists: 'googlesitemaps'
 ---
 Director:
     rules:
