@@ -87,7 +87,7 @@ class MultilingualModelAsController extends ModelAsController {
             // If a root page has been renamed, redirect to the new location.
             // See ContentController->handleRequest() for similiar logic.
             $redirect = self::find_old_page($URLSegment);
-            if($redirect) {
+            if($redirect && $redirect->Locale==Translatable::get_current_locale()) {
                 $params = $request->getVars();
                 if(isset($params['url'])) unset($params['url']);
                 $this->response = new SS_HTTPResponse();
