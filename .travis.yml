@@ -14,8 +14,8 @@ before_script:
  - phpenv rehash
  - git clone git://github.com/silverstripe-labs/silverstripe-travis-support.git ~/travis-support
  - php ~/travis-support/travis_setup.php --source `pwd` --target ~/builds/ss
- - php ~/translatablerouting/tests/pre-up/travis_setup.php
  - cd ~/builds/ss
+ - php translatablerouting/tests/pre-up/travis_setup.php
 
 script: 
  - phpunit translatablerouting/tests/
