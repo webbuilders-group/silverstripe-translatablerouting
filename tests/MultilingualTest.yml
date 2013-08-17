@@ -1,0 +1,39 @@
+Page:
+    home:
+        Title: Home
+        Locale: en_US
+    nested:
+        Title: Nested Home
+        Parent: =>Page.home
+        Locale: en_US
+    page1:
+        Title: First Page
+        URLSegment: page1
+        Locale: en_US
+    page2:
+        Title: Second Page
+        URLSegment: page2
+        Locale: en_US
+    page3:
+        Title: Third Page
+        URLSegment: page3
+        Locale: en_US
+    home_fr:
+        Title: Maison
+        Locale: fr_FR
+    nested_fr:
+        Title: Nested Home
+        Parent: =>Page.home_fr
+        Locale: fr_FR
+    page1_fr:
+        Title: First Page
+        URLSegment: page1-fr-fr
+        Locale: fr_FR
+    page2_fr:
+        Title: Second Page
+        URLSegment: page2-fr-fr
+        Locale: fr_FR
+    page3_fr:
+        Title: Third Page
+        URLSegment: page3-fr-fr
+        Locale: fr_FR

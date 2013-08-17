@@ -1,5 +1,6 @@
 Translatable Routing
 =================
+[![Build Status](https://travis-ci.org/webbuilders-group/silverstripe-translatablerouting.png)](https://travis-ci.org/webbuilders-group/silverstripe-translatablerouting)
 
 Extends SilverStripe Translatable module and replaces routing to enable multi-lingual urls
 
