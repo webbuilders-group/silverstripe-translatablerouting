@@ -8,7 +8,7 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 
 ## Requirements
 * SilverStripe CMS 3.0.x
-* SilverStripe Translatable 1.0.x
+* [SilverStripe Translatable 1.0.x](https://github.com/silverstripe/silverstripe-translatable/tree/1.0)
 
 
 ## Installation
