@@ -9,7 +9,6 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     private $origCookieLocale;
     private $origAcceptLanguage;
     private $origLocaleRoutingEnabled;
-    private $firstRun=true;
     
     protected $autoFollowRedirection=false;
     
@@ -17,24 +16,22 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
 		parent::setUp();
         
         
-        if($this->firstRun) {
-            Translatable::disable_locale_filter();
-            
-            //Publish all english pages
-            $pages=Page::get()->filter('Locale', 'en_US');
-            foreach($pages as $page) {
-                $page->publish('Stage', 'Live');
-            }
-            
-            //Rewrite the french translation groups and publish french pages
-            $pagesFR=Page::get()->filter('Locale', 'fr_FR');
-            foreach($pagesFR as $index=>$page) {
-                $page->addTranslationGroup($pages->offsetGet($index)->ID, true);
-                $page->publish('Stage', 'Live');
-            }
-            
-            Translatable::enable_locale_filter();
+        Translatable::disable_locale_filter();
+        
+        //Publish all english pages
+        $pages=Page::get()->filter('Locale', 'en_US');
+        foreach($pages as $page) {
+            $page->publish('Stage', 'Live');
         }
+        
+        //Rewrite the french translation groups and publish french pages
+        $pagesFR=Page::get()->filter('Locale', 'fr_FR');
+        foreach($pagesFR as $index=>$page) {
+            $page->addTranslationGroup($pages->offsetGet($index)->ID, true);
+            $page->publish('Stage', 'Live');
+        }
+        
+        Translatable::enable_locale_filter();
         
         
         $this->origLocaleRoutingEnabled=MultilingualRootURLController::get_use_locale_url();

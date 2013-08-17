@@ -9,7 +9,6 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     private $origCookieLocale;
     private $origAcceptLanguage;
     private $origLocaleRoutingEnabled;
-    private $firstRun=true;
     
     protected $autoFollowRedirection = false;
     
@@ -17,15 +16,14 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
 		parent::setUp();
         
         
-        if($this->firstRun) {
-            Translatable::disable_locale_filter();
-            
-            $default=$this->objFromFixture('Page', 'home');
-            $defaultFR=$this->objFromFixture('Page', 'home_fr');
-            $defaultFR->addTranslationGroup($default->ID, true);
-            
-            Translatable::enable_locale_filter();
-        }
+        //Remap translation group for home pages
+        Translatable::disable_locale_filter();
+        
+        $default=$this->objFromFixture('Page', 'home');
+        $defaultFR=$this->objFromFixture('Page', 'home_fr');
+        $defaultFR->addTranslationGroup($default->ID, true);
+        
+        Translatable::enable_locale_filter();
         
         
         $this->origLocaleRoutingEnabled=MultilingualRootURLController::get_use_locale_url();
