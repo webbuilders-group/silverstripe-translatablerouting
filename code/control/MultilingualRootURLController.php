@@ -50,7 +50,7 @@ class MultilingualRootURLController extends RootURLController {
                 return $result;
             }else {
                 //URL Param Locale is not allowed so redirect to default
-                $this->redirect(Controller::join_links(Director::baseURL(), (self::get_use_locale_url() ? Translatable::default_locale():Translatable::default_lang())).'/');
+                $this->redirect(Controller::join_links(Director::baseURL(), (self::get_use_locale_url() ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
                 
                 $this->popCurrent();
                 return $this->response;
@@ -68,14 +68,14 @@ class MultilingualRootURLController extends RootURLController {
             
             Cookie::set('language', $language);
             
-            $this->redirect(Controller::join_links(Director::baseURL(), $language).'/');
+            $this->redirect(Controller::join_links(Director::baseURL(), $language).'/', 301);
             
             $this->popCurrent();
             return $this->response;
         }
         
         
-        $this->redirect(Controller::join_links(Director::baseURL(), (self::get_use_locale_url() ? Translatable::default_locale():Translatable::default_lang())).'/');
+        $this->redirect(Controller::join_links(Director::baseURL(), (self::get_use_locale_url() ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
         
         $this->popCurrent();
         return $this->response;
@@ -96,7 +96,7 @@ class MultilingualRootURLController extends RootURLController {
             if(in_array($locale, Translatable::get_allowed_locales())) {
                 return $locale;
             }else {
-                Cookie::clear('language');
+                Cookie::forceExpiry('language');
             }
         }
         
