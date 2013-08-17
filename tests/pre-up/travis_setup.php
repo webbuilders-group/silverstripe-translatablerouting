@@ -5,13 +5,11 @@ if (php_sapi_name() != 'cli') {
 }
 
 $opts = getopt('', array(
-	'source:', // required
 	'target:', // required
-	'config:',
 ));
 
 // Sanity checks
-if(!$opts) {
+if(!$opts || !isset($opts['target'])) {
 	echo "Invalid arguments specified\n";
 	exit(1);
 }
