@@ -31,6 +31,7 @@ class MultilingualRootURLController extends RootURLController {
                 }
                 
                 Translatable::set_current_locale($locale);
+                i18n::set_default_locale($locale);
                 
                 
                 if(!DB::isActive() || !ClassInfo::hasTable('SiteTree')) {
