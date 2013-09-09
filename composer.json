@@ -3,6 +3,7 @@
     "description": "Extends SilverStripe Translatable module and replaces routing to enable multi-lingual urls",
     "type": "silverstripe-module",
     "keywords": ["silverstripe", "cms", "i18n", "localization", "globalization", "multilingual"],
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Ed Chipman",
