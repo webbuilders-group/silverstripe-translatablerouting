@@ -13,7 +13,7 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 
 
 ## Installation
-* Download the module from here https://github.com/webbuilders-group/silverstripe-translatablerouting/archive/master.zip
+* Download the module from here https://github.com/webbuilders-group/silverstripe-translatablerouting/archive/3.0.zip
 * Extract the downloaded archive into your site root so that the destination folder is called translatablerouting, opening the extracted folder should contain _config.php in the root along with other files/folders
 * Run dev/build?flush=all to regenerate the manifest
 
