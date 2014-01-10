@@ -16,8 +16,8 @@
     {
         "php": ">=5.3.2",
         "silverstripe/framework": "~3.1",
-        "silverstripe/cms": "~3.1
-        "silverstripe/translatable": "1.0.*",
+        "silverstripe/cms": "~3.1",
+        "silverstripe/translatable": "*",
         "composer/installers": "*"
     },
 	"support": {
