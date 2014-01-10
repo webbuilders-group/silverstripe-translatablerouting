@@ -1,0 +1,6 @@
+---
+Name: translatablerouting
+After: 'framework/*', 'cms/*'
+---
+MultilingualRootURLController:
+    UseLocaleURL: false

@@ -6,9 +6,9 @@ notifications:
     - devs@webbuildersgroup.com
 
 env:
- - DB=MYSQL CORE_RELEASE=3.0
- - DB=PGSQL CORE_RELEASE=3.0
- - DB=SQLITE3 CORE_RELEASE=3.0
+ - DB=MYSQL CORE_RELEASE=3.1
+ - DB=PGSQL CORE_RELEASE=3.1
+ - DB=SQLITE3 CORE_RELEASE=3.1
 
 before_script:
  - phpenv rehash

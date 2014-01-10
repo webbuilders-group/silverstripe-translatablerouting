@@ -8,8 +8,8 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 * Ed Chipman ([UndefinedOffset](https://github.com/UndefinedOffset))
 
 ## Requirements
-* SilverStripe CMS 3.0.x
-* [SilverStripe Translatable 1.0.x](https://github.com/silverstripe/silverstripe-translatable/tree/1.0)
+* SilverStripe CMS 3.1.x
+* [SilverStripe Translatable](https://github.com/silverstripe/silverstripe-translatable/)
 
 
 ## Installation
@@ -27,7 +27,7 @@ You must add the following methods to your Page class for this module to functio
  * @return {string}
  */
 public function Link($action=null) {
-    return Controller::join_links(Director::baseURL(), (MultilingualRootURLController::get_use_locale_url() ? $this->Locale:i18n::get_lang_from_locale($this->Locale)), $this->RelativeLink($action));
+    return Controller::join_links(Director::baseURL(), (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->Locale:i18n::get_lang_from_locale($this->Locale)), $this->RelativeLink($action));
 }
 
 /**
@@ -66,9 +66,9 @@ public function init() {
         unset($getVars['url']);
         
         if($getVars) {
-            $url=(MultilingualRootURLController::get_use_locale_url() ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/?'.http_build_query($getVars);
+            $url=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/?'.http_build_query($getVars);
         }else {
-            $url=(MultilingualRootURLController::get_use_locale_url() ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/';
+            $url=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/';
         }
         
         $this->redirect($url, 301);
@@ -78,10 +78,11 @@ public function init() {
 ```
 
 #### Locale URL's
-If you want to use locale's (for example en_US) as your url pattern instead of just languages you need to add this to your mysite/_config.php
-```php
-MultilingualRootURLController::set_use_locale_url(true);
+If you want to use locale's (for example en_US) as your url pattern instead of just languages you need to add this to your mysite/_config/config.yml, make sure you set the rule to be after "translatablerouting/*"
+```yml
+MultilingualRootURLController:
+    UseLocaleURL: true
 ```
 
 ## Notes
-Translatable Routing has support for the SilverStripe Google Sitemaps module for 3.0, which will add support for the multi-lingual site per [google's documentation](https://support.google.com/webmasters/answer/2620865?hl=en) on doing this.
+Translatable Routing has support for the SilverStripe Google Sitemaps module for 3.1, which will add support for the multi-lingual site per [google's documentation](https://support.google.com/webmasters/answer/2620865?hl=en) on doing this.

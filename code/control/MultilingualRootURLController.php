@@ -40,7 +40,7 @@ class MultilingualRootURLController extends RootURLController {
                     return $this->response;
                 }
             	
-                $request=new SS_HTTPRequest($request->httpMethod(), $language.'/'.self::get_homepage_link().'/', $request->getVars(), $request->postVars());
+                $request->setUrl($language.'/'.self::get_homepage_link().'/');
                 $request->match('$Language/$URLSegment//$Action', true);
                 
                 
@@ -97,7 +97,7 @@ class MultilingualRootURLController extends RootURLController {
             if(in_array($locale, Translatable::get_allowed_locales())) {
                 return $locale;
             }else {
-                Cookie::forceExpiry('language');
+                Cookie::force_expiry('language');
             }
         }
         
@@ -162,17 +162,23 @@ class MultilingualRootURLController extends RootURLController {
     /**
      * Sets the whether to use the locale in the url or just the language
      * @param {bool} $value True to use the full locale (i.e. en_US) in the url or just the language
+     * 
+     * @deprecated 3.2 Use the "MultilingualRootURLController.UseLocaleURL" config setting instead
      */
     public static function set_use_locale_url($value) {
-        self::$useLocaleURL=$value;
+        Deprecation::notice('3.2', 'Use the "MultilingualRootURLController.UseLocaleURL" config setting instead');
+        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', $value);
     }
     
     /**
      * Sets the whether to use the locale in the url or just the language
      * @return {bool} True to use the full locale (i.e. en_US) in the url or just the language
+     * 
+     * @deprecated 3.2 Use the "MultilingualRootURLController.UseLocaleURL" config setting instead
      */
     public static function get_use_locale_url() {
-        return self::$useLocaleURL;
+        Deprecation::notice('3.2', 'Use the "MultilingualRootURLController.UseLocaleURL" config setting instead');
+        return Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
     }
 }
 ?>

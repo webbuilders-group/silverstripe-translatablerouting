@@ -26,14 +26,14 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         Translatable::enable_locale_filter();
         
         
-        $this->origLocaleRoutingEnabled=MultilingualRootURLController::get_use_locale_url();
-        MultilingualRootURLController::set_use_locale_url(false);
+        $this->origLocaleRoutingEnabled=Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
+        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', false);
         
         $this->origAcceptLanguage=$_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='en-US,en;q=0.5';
         
         $this->origCookieLocale=Cookie::get('language');
-        Cookie::forceExpiry('language');
+        Cookie::force_expiry('language');
         
         $this->origCurrentLocale=Translatable::get_current_locale();
         Translatable::set_current_locale('en_US');
@@ -59,7 +59,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         
         i18n::set_locale($this->origi18nLocale);
         
-        Cookie::forceExpiry('language');
+        Cookie::force_expiry('language');
         
         if($this->origCookieLocale) {
             Cookie::set('language', $this->origCookieLocale);
@@ -105,7 +105,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     
 	public function testEnglishLocaleRootRouting() {
         //Enable locale urls
-        MultilingualRootURLController::set_use_locale_url(true);
+        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
         
         //Get the root url
         $response=$this->get('');
@@ -122,7 +122,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     
 	public function testFrenchLocaleRootRouting() {
         //Enable locale urls
-        MultilingualRootURLController::set_use_locale_url(true);
+        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
         
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';

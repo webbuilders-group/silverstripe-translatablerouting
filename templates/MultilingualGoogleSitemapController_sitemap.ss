@@ -5,8 +5,8 @@
         <url>
             <loc>$AbsoluteLink</loc>
            	<% if $LastEdited %><lastmod>$LastEdited.Format(c)</lastmod><% end_if %>
-            <% if $ChangeFreq %><changefreq>$ChangeFreq</changefreq><% end_if %>
-            <% if $Priority %><priority>$Priority</priority><% end_if %>
+            <% if $ChangeFrequency %><changefreq>$ChangeFrequency</changefreq><% end_if %>
+            <% if $GooglePriority %><priority>$GooglePriority</priority><% end_if %>
             <% if $Translations.Count %>
                 <xhtml:link rel="alternate" hreflang="$Lang" href="$AbsoluteLink"/>
                 <% loop $Translations %>

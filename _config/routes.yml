@@ -15,4 +15,4 @@ Only:
 ---
 Director:
     rules:
-        'sitemap.xml': 'MultilingualGoogleSitemap'
+        'sitemap.xml': 'MultilingualGoogleSitemapController'

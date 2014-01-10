@@ -34,14 +34,14 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         Translatable::enable_locale_filter();
         
         
-        $this->origLocaleRoutingEnabled=MultilingualRootURLController::get_use_locale_url();
-        MultilingualRootURLController::set_use_locale_url(false);
+        $this->origLocaleRoutingEnabled=Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
+        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', false);
         
         $this->origAcceptLanguage=$_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='en-US,en;q=0.5';
         
         $this->origCookieLocale=Cookie::get('language');
-        Cookie::forceExpiry('language');
+        Cookie::force_expiry('language');
         Cookie::set('language', 'en');
         
         $this->origCurrentLocale=Translatable::get_current_locale();
@@ -68,7 +68,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         
         i18n::set_locale($this->origi18nLocale);
         
-        Cookie::forceExpiry('language');
+        Cookie::force_expiry('language');
         
         if($this->origCookieLocale) {
             Cookie::set('language', $this->origCookieLocale);

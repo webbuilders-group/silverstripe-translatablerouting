@@ -1,5 +1,7 @@
 <?php
 class MultilingualModelAsController extends ModelAsController {
+    private static $extensions=array('MultilingualOldPageRedirector');
+    
     /**
      * @uses ModelAsController::getNestedController()
      * @return SS_HTTPResponse
@@ -11,7 +13,7 @@ class MultilingualModelAsController extends ModelAsController {
         $this->pushCurrent();
         
         //Get the local from the language param
-        if(MultilingualRootURLController::get_use_locale_url()) {
+        if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
             $locale=$request->param('Language');
         }else if(strpos($request->param('Language'), '_')!==false) {
             //Locale not found 404
@@ -78,48 +80,20 @@ class MultilingualModelAsController extends ModelAsController {
         $sitetree = DataObject::get_one(
                 'SiteTree',
                 sprintf(
-                        '"URLSegment" = \'%s\' %s',
-                        Convert::raw2sql(rawurlencode($URLSegment)),
-                        (SiteTree::nested_urls() ? 'AND "ParentID" = 0' : null)
+                    '"URLSegment" = \'%s\' %s',
+                    Convert::raw2sql(rawurlencode($URLSegment)),
+                    (SiteTree::nested_urls() ? 'AND "ParentID" = 0' : null)
                 )
         );
     
         if(!$sitetree) {
-            // If a root page has been renamed, redirect to the new location.
-            // See ContentController->handleRequest() for similiar logic.
-            $redirect = self::find_old_page($URLSegment);
-            if($redirect && $redirect->Locale==Translatable::get_current_locale()) {
-                $params = $request->getVars();
-                if(isset($params['url'])) unset($params['url']);
-                $this->response = new SS_HTTPResponse();
-                $this->response->redirect(
-                        Controller::join_links(
-                                $redirect->Link(
-                                        Controller::join_links(
-                                                $request->param('Action'),
-                                                $request->param('ID'),
-                                                $request->param('OtherID')
-                                        )
-                                ),
-                                // Needs to be in separate join links to avoid urlencoding
-                                ($params) ? '?' . http_build_query($params) : null
-                        ),
-                        301
-                );
-    
-                return $this->response;
-            }
-            	
-            if($response = ErrorPage::response_for(404)) {
-                return $response;
-            } else {
-                $this->httpError(404, 'The requested page could not be found.');
-            }
+            $response = ErrorPage::response_for(404);
+			$this->httpError(404, $response ? $response : 'The requested page could not be found.');
         }
     
         // Enforce current language setting to the loaded SiteTree object
         if(class_exists('Translatable') && $sitetree->Locale) {
-            if(MultilingualRootURLController::get_use_locale_url()) {
+            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
                 Cookie::set('language', $sitetree->Locale);
             }else {
                 Cookie::set('language', i18n::get_lang_from_locale($sitetree->Locale));
@@ -134,5 +108,21 @@ class MultilingualModelAsController extends ModelAsController {
     
         return self::controller_for($sitetree, $this->request->param('Action'));
     }
+
+	/**
+	 * @deprecated 3.2 Use MultilingualOldPageRedirector::find_old_page instead
+	 *
+	 * @param string $URLSegment A subset of the url. i.e in /home/contact/ home and contact are URLSegment.
+	 * @param int $parentID The ID of the parent of the page the URLSegment belongs to.
+	 * @return SiteTree
+	 */
+	public static function find_old_page($URLSegment, $parent = null, $ignoreNestedURLs = false) {
+		Deprecation::notice('3.2', 'Use MultilingualOldPageRedirector::find_old_page instead');
+		if ($parent) {
+			$parent = SiteTree::get()->byId($parent);	
+		}
+		$url = MultilingualOldPageRedirector::find_old_page(array($URLSegment), $parent);
+		return SiteTree::get_by_link($url);
+	}
 }
 ?>
