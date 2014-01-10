@@ -1,5 +1,5 @@
 {
-    "name": "webbuilders-group/silverstripe-translatablerouting",
+    "name": "webbuilders-group/translatablerouting",
     "description": "Extends SilverStripe Translatable module and replaces routing to enable multi-lingual urls",
     "type": "silverstripe-module",
     "keywords": ["silverstripe", "cms", "i18n", "localization", "globalization", "multilingual"],
@@ -18,11 +18,14 @@
         "silverstripe/framework": "~3.1",
         "silverstripe/cms": "~3.1",
         "silverstripe/translatable": "*",
-        "composer/installers": "~1.0"
+        "composer/installers": "*"
     },
 	"support": {
 		"issues": "https://github.com/webbuilders-group/silverstripe-translatablerouting/issues"
 	},
+    "replace": {
+        "webbuilders-group/silverstripe-translatablerouting": "*"
+    },
 	"extra": {
 		"installer-name": "translatablerouting"
 	}
