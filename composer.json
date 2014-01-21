@@ -25,5 +25,8 @@
 	},
 	"extra": {
 		"installer-name": "translatablerouting"
-	}
+	},
+    "suggest": {
+        "silverstripe/googlesitemaps": "Support for the Google Sitemaps XML system, with translatable routing proper multi-lingual support is added"
+    }
 }
