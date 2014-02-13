@@ -33,7 +33,7 @@ class MultilingualModelAsController extends ModelAsController {
             Cookie::set('language', $request->param('Language'));
             
             Translatable::set_current_locale($locale);
-            i18n::set_default_locale($locale);
+            i18n::set_locale($locale);
         }else {
             //Locale not found 404
             if($response=ErrorPage::response_for(404)) {

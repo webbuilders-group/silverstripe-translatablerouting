@@ -10,7 +10,7 @@ class MultilingualRootURLController extends RootURLController {
         $this->init();
         
         if($language=$request->param('Language')) {
-            if(self::get_use_locale_url()) {
+            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
                 $locale=$language;
             }else if(strpos($request->param('Language'), '_')!==false) {
                 //Locale not found 404
@@ -31,7 +31,7 @@ class MultilingualRootURLController extends RootURLController {
                 }
                 
                 Translatable::set_current_locale($locale);
-                i18n::set_default_locale($locale);
+                i18n::set_locale($locale);
                 
                 
                 if(!DB::isActive() || !ClassInfo::hasTable('SiteTree')) {
@@ -51,7 +51,7 @@ class MultilingualRootURLController extends RootURLController {
                 return $result;
             }else {
                 //URL Param Locale is not allowed so redirect to default
-                $this->redirect(Controller::join_links(Director::baseURL(), (self::get_use_locale_url() ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
+                $this->redirect(Controller::join_links(Director::baseURL(), (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
                 
                 $this->popCurrent();
                 return $this->response;
@@ -61,7 +61,7 @@ class MultilingualRootURLController extends RootURLController {
         
         //No Locale Param so detect browser language and redirect
         if($locale=self::detect_browser_locale()) {
-            if(self::get_use_locale_url()) {
+            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
                 $language=$locale;
             }else {
                 $language=i18n::get_lang_from_locale($locale);
@@ -76,7 +76,7 @@ class MultilingualRootURLController extends RootURLController {
         }
         
         
-        $this->redirect(Controller::join_links(Director::baseURL(), (self::get_use_locale_url() ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
+        $this->redirect(Controller::join_links(Director::baseURL(), (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
         
         $this->popCurrent();
         return $this->response;
@@ -88,7 +88,7 @@ class MultilingualRootURLController extends RootURLController {
      */
     public static function detect_browser_locale() {
         if($language=Cookie::get('language')) {
-            if(self::get_use_locale_url()) {
+            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
                 $locale=$language;
             }else {
                 $locale=i18n::get_locale_from_lang($language);
