@@ -12,7 +12,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     
     protected $autoFollowRedirection = false;
     
-    function setUp() {
+    public function setUp() {
 		parent::setUp();
         
         
@@ -50,7 +50,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         MultilingualRootURLController::reset();
     }
 	
-	function tearDown() {
+	public function tearDown() {
         MultilingualRootURLController::set_use_locale_url($this->origLocaleRoutingEnabled);
         
 		Translatable::set_current_locale($this->origCurrentLocale);
