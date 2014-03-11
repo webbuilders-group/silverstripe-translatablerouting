@@ -81,6 +81,9 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
 		parent::tearDown();
 	}
     
+	/**
+	 * Verifies that the language/locale is required on the url
+	 */
     public function testMultilingualRequired() {
         $page=$this->objFromFixture('Page', 'page1');
         
@@ -91,6 +94,9 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         $this->assertEquals(200, $response->getStatusCode());
     }
     
+    /**
+     * Tests to ensure that loading a page not on the current language returns a page not found when accessing it via the wrong url
+     */
     public function testCrossLangNotFound() {
         $page=$this->objFromFixture('Page', 'page1_fr');
         
@@ -98,6 +104,9 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         $this->assertEquals(404, $response->getStatusCode());
     }
     
+    /**
+     * Tests to see if the english home page is the root url and the french home page is not for english browsers
+     */
 	public function testEnglishShouldBeRoot() {
         $default=$this->objFromFixture('Page', 'home');
         $defaultFR=$this->objFromFixture('Page', 'home_fr');
@@ -106,6 +115,9 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         $this->assertEquals(false, MultilingualRootURLController::should_be_on_root($defaultFR));
     }
     
+    /**
+     * Tests to see if the french home page is the root url and the english home page is not for french browsers
+     */
     public function testFrenchShouldBeRoot() {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
