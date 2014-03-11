@@ -72,6 +72,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
 		parent::tearDown();
 	}
     
+	/**
+	 * Tests to ensure that the site redirects to the default language root url when the user hits the site root
+	 */
 	public function testEnglishLangRootRouting() {
         //Get the root url
         $response=$this->get('');
@@ -86,6 +89,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
                         );
 	}
     
+	/**
+	 * Tests to ensure that the site redirects to the french language root url when the user hits the site root and the users accept language is french first
+	 */
 	public function testFrenchLangRootRouting() {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
@@ -102,7 +108,10 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
                             $response->getHeader('Location')
                         );
 	}
-    
+	
+	/**
+	 * Tests to ensure that the site redirects to the default locale root url when the user hits the site root and the MultilingualRootURLController.UseLocaleURL is set to true
+	 */
 	public function testEnglishLocaleRootRouting() {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
@@ -120,6 +129,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
                         );
 	}
     
+	/**
+	 * Tests to ensure that the site redirects to the french locale root url when the user hits the site root and the users accept language is french first with the MultilingualRootURLController.UseLocaleURL is set to true
+	 */
 	public function testFrenchLocaleRootRouting() {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
@@ -140,10 +152,18 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
                         );
 	}
     
+	/**
+	 * Verifies the correct home page is detected
+	 * @TODO Shouldn't this be failing, should it not be en/home?
+	 */
     public function testEnglishGetHomepageLink() {
         $this->assertEquals('home', MultilingualRootURLController::get_homepage_link());
     }
     
+	/**
+	 * Verifies the correct home page is detected for the french locale
+	 * @TODO Shouldn't this be failing, should it not be fr/maison?
+	 */
     public function testFrenchGetHomepageLink() {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
