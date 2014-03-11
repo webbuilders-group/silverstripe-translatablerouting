@@ -83,5 +83,29 @@ If you want to use locale's (for example en_US) as your url pattern instead of j
 MultilingualRootURLController::set_use_locale_url(true);
 ```
 
+## Generic Controllers
+Since direct controller extensions are not routed though ModelAsController you need to apply the translation rules manually, this is able to be done via the MultilingualControllerExtension and a custom url rule. By default this is not applied to any controllers, so you must add the extension yourself to your controller. It can be done to all controllers however only the browser detection will work since the default controller urls do not include the language. To apply the extension add the following to your php configuration.
+
+On the controller:
+```php
+public static $extensions=array(
+                                'MultilingualControllerExtension'
+                            );
+```
+
+Via _config.php:
+```php
+Object::add_extension('MyController', 'MultilingualControllerExtension');
+```
+
+Lastly you need to apply a custom url rule (route) if you want to have the language/locale in the url like pages. As well remember the default Link method of controllers only returns the class name so you will need to override this and add the language/locale to the url or use the MultilingualLink method provided by the extension which works the same as Controller::Link() but adds the correct language/locale to the url.
+
+```yml
+Director:
+    rules:
+        '$Language/my-controller//$Action/$ID/$OtherID': 'MyController' #Option 1
+        '$Language/MyController//$Action/$ID/$OtherID': 'MyController' #Option 2
+```
+
 ## Notes
 Translatable Routing has support for the SilverStripe Google Sitemaps module for 3.0, which will add support for the multi-lingual site per [google's documentation](https://support.google.com/webmasters/answer/2620865?hl=en) on doing this.
