@@ -1,0 +1,7 @@
+---
+Name: translatablerouting
+After: 'framework/*', 'cms/*'
+---
+SiteTree:
+    extensions:
+        - 'MultilingualSiteTreeExtension'
