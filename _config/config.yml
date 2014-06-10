@@ -4,3 +4,8 @@ After: 'framework/*', 'cms/*'
 ---
 MultilingualRootURLController:
     UseLocaleURL: false
+
+
+SiteTree:
+    extensions:
+        - 'MultilingualSiteTreeExtension'
