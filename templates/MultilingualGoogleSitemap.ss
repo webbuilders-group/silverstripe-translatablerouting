@@ -8,9 +8,9 @@
             <% if $ChangeFreq %><changefreq>$ChangeFreq</changefreq><% end_if %>
             <% if $Priority %><priority>$Priority</priority><% end_if %>
             <% if $Translations.Count %>
-                <xhtml:link rel="alternate" hreflang="$Lang" href="$AbsoluteLink"/>
+                <xhtml:link rel="alternate" hreflang="$RFC1766Locale" href="$AbsoluteLink"/>
                 <% loop $Translations %>
-                    <xhtml:link rel="alternate" hreflang="$Lang" href="$AbsoluteLink"/>
+                    <xhtml:link rel="alternate" hreflang="$RFC1766Locale" href="$AbsoluteLink"/>
                 <% end_loop %>
             <% end_if %>
         </url>
