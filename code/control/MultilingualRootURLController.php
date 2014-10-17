@@ -100,7 +100,7 @@ class MultilingualRootURLController extends RootURLController {
         }
         
         // Given multiple canditates, narrow down the final result using the client's preferred languages
-        $inputLocales=$_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        $inputLocales=(array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER) ? $_SERVER['HTTP_ACCEPT_LANGUAGE']:null);
         if(empty($inputLocales)) {
             return null;
         }
