@@ -19,9 +19,9 @@ class MultilingualSiteTreeExtension extends DataExtension {
     }
     
     /**
-	 * Gets the RFC 1766 version of the input locale
-	 * @return {string} RFC 1766 version of the locale (i.e en-US)
-	 */
+     * Gets the RFC 1766 version of the input locale
+     * @return {string} RFC 1766 version of the locale (i.e en-US)
+     */
     public function getRFC1766Locale() {
         return i18n::convert_rfc1766($this->owner->Locale);
     }

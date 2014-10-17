@@ -13,17 +13,17 @@ class MultilingualGoogleSitemapController extends GoogleSitemapController {
     public function sitemap() {
         if($this->request->param('ID')=='SiteTree') {
             //Disable the locale filter
-    	    Translatable::disable_locale_filter();
+            Translatable::disable_locale_filter();
             
-    	    
+            
             $items=parent::sitemap();
             
             
-    		//Re-enable the locale filter
-    	    Translatable::enable_locale_filter();
-    	    
-    	    
-    	    return $items;
+            //Re-enable the locale filter
+            Translatable::enable_locale_filter();
+            
+            
+            return $items;
         }else {
             return parent::sitemap();
         }

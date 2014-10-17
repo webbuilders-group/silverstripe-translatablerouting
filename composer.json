@@ -20,12 +20,12 @@
         "silverstripe/translatable": "*",
         "composer/installers": "*"
     },
-	"support": {
-		"issues": "https://github.com/webbuilders-group/silverstripe-translatablerouting/issues"
-	},
-	"extra": {
-		"installer-name": "translatablerouting"
-	},
+    "support": {
+        "issues": "https://github.com/webbuilders-group/silverstripe-translatablerouting/issues"
+    },
+    "extra": {
+        "installer-name": "translatablerouting"
+    },
     "suggest": {
         "silverstripe/googlesitemaps": "Support for the Google Sitemaps XML system, with translatable routing proper multi-lingual support is added"
     }

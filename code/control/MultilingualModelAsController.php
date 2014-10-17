@@ -88,7 +88,7 @@ class MultilingualModelAsController extends ModelAsController {
     
         if(!$sitetree) {
             $response = ErrorPage::response_for(404);
-			$this->httpError(404, $response ? $response : 'The requested page could not be found.');
+            $this->httpError(404, $response ? $response : 'The requested page could not be found.');
         }
     
         // Enforce current language setting to the loaded SiteTree object
@@ -109,20 +109,20 @@ class MultilingualModelAsController extends ModelAsController {
         return self::controller_for($sitetree, $this->request->param('Action'));
     }
 
-	/**
-	 * @deprecated 3.2 Use MultilingualOldPageRedirector::find_old_page instead
-	 *
-	 * @param string $URLSegment A subset of the url. i.e in /home/contact/ home and contact are URLSegment.
-	 * @param int $parentID The ID of the parent of the page the URLSegment belongs to.
-	 * @return SiteTree
-	 */
-	public static function find_old_page($URLSegment, $parent = null, $ignoreNestedURLs = false) {
-		Deprecation::notice('3.2', 'Use MultilingualOldPageRedirector::find_old_page instead');
-		if ($parent) {
-			$parent = SiteTree::get()->byId($parent);	
-		}
-		$url = MultilingualOldPageRedirector::find_old_page(array($URLSegment), $parent);
-		return SiteTree::get_by_link($url);
-	}
+    /**
+     * @deprecated 3.2 Use MultilingualOldPageRedirector::find_old_page instead
+     *
+     * @param string $URLSegment A subset of the url. i.e in /home/contact/ home and contact are URLSegment.
+     * @param int $parentID The ID of the parent of the page the URLSegment belongs to.
+     * @return SiteTree
+     */
+    public static function find_old_page($URLSegment, $parent = null, $ignoreNestedURLs = false) {
+        Deprecation::notice('3.2', 'Use MultilingualOldPageRedirector::find_old_page instead');
+        if ($parent) {
+            $parent = SiteTree::get()->byId($parent);    
+        }
+        $url = MultilingualOldPageRedirector::find_old_page(array($URLSegment), $parent);
+        return SiteTree::get_by_link($url);
+    }
 }
 ?>
