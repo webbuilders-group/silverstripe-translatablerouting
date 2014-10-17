@@ -1,8 +1,8 @@
 <?php
 class MultilingualModelAsControllerTest extends FunctionalTest {
-	public static $fixture_file='MultilingualTest.yml';
+    public static $fixture_file='MultilingualTest.yml';
     
-	private $origLocale;
+    private $origLocale;
     private $origCurrentLocale;
     private $origAllowedLocales;
     private $origi18nLocale;
@@ -13,7 +13,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     protected $autoFollowRedirection=false;
     
     public function setUp() {
-		parent::setUp();
+        parent::setUp();
         
         
         Translatable::disable_locale_filter();
@@ -48,7 +48,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         Translatable::set_current_locale('en_US');
         
         $this->origLocale=Translatable::default_locale();
-		Translatable::set_default_locale('en_US');
+        Translatable::set_default_locale('en_US');
         
         $this->origi18nLocale=i18n::get_locale();
         i18n::set_locale('en_US');
@@ -58,12 +58,12 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         
         MultilingualRootURLController::reset();
     }
-	
-	public function tearDown() {
+    
+    public function tearDown() {
         MultilingualRootURLController::set_use_locale_url($this->origLocaleRoutingEnabled);
         
-		Translatable::set_current_locale($this->origCurrentLocale);
-		Translatable::set_default_locale($this->origLocale);
+        Translatable::set_current_locale($this->origCurrentLocale);
+        Translatable::set_default_locale($this->origLocale);
         Translatable::set_allowed_locales($this->origAllowedLocales);
         
         i18n::set_locale($this->origi18nLocale);
@@ -78,12 +78,12 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         
         MultilingualRootURLController::reset();
         
-		parent::tearDown();
-	}
+        parent::tearDown();
+    }
     
-	/**
-	 * Verifies that the language/locale is required on the url
-	 */
+    /**
+     * Verifies that the language/locale is required on the url
+     */
     public function testMultilingualRequired() {
         $page=$this->objFromFixture('Page', 'page1');
         
@@ -107,7 +107,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     /**
      * Tests to see if the english home page is the root url and the french home page is not for english browsers
      */
-	public function testEnglishShouldBeRoot() {
+    public function testEnglishShouldBeRoot() {
         $default=$this->objFromFixture('Page', 'home');
         $defaultFR=$this->objFromFixture('Page', 'home_fr');
         
@@ -121,7 +121,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     public function testFrenchShouldBeRoot() {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
-		Translatable::set_default_locale('fr_FR');
+        Translatable::set_default_locale('fr_FR');
         Translatable::set_current_locale('fr_FR');
         i18n::set_locale('fr_FR');
         

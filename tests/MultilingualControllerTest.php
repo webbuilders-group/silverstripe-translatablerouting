@@ -1,8 +1,8 @@
 <?php
 class MultilingualControllerTest extends FunctionalTest {
-	public static $fixture_file='MultilingualTest.yml';
+    public static $fixture_file='MultilingualTest.yml';
     
-	private $origLocale;
+    private $origLocale;
     private $origCurrentLocale;
     private $origAllowedLocales;
     private $origi18nLocale;
@@ -13,7 +13,7 @@ class MultilingualControllerTest extends FunctionalTest {
     protected $autoFollowRedirection=false;
     
     public function setUp() {
-		parent::setUp();
+        parent::setUp();
         
         $this->origLocaleRoutingEnabled=Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', false);
@@ -29,7 +29,7 @@ class MultilingualControllerTest extends FunctionalTest {
         Translatable::set_current_locale('en_US');
         
         $this->origLocale=Translatable::default_locale();
-		Translatable::set_default_locale('en_US');
+        Translatable::set_default_locale('en_US');
         
         $this->origi18nLocale=i18n::get_locale();
         i18n::set_locale('en_US');
@@ -46,12 +46,12 @@ class MultilingualControllerTest extends FunctionalTest {
         
         MultilingualRootURLController::reset();
     }
-	
-	public function tearDown() {
+    
+    public function tearDown() {
         MultilingualRootURLController::set_use_locale_url($this->origLocaleRoutingEnabled);
         
-		Translatable::set_current_locale($this->origCurrentLocale);
-		Translatable::set_default_locale($this->origLocale);
+        Translatable::set_current_locale($this->origCurrentLocale);
+        Translatable::set_default_locale($this->origLocale);
         Translatable::set_allowed_locales($this->origAllowedLocales);
         
         i18n::set_locale($this->origi18nLocale);
@@ -66,85 +66,85 @@ class MultilingualControllerTest extends FunctionalTest {
         
         MultilingualRootURLController::reset();
         
-		parent::tearDown();
-	}
-	
-	/**
-	 * Tests to see if the controller responds correctly if the language is in the url
-	 */
-	public function testLanguageInURL() {
-	    //Perform Request
-	    $response=$this->get('fr/multilingual-test-controller/');
-	    
-	    
-	    //Ensure a 200 response
+        parent::tearDown();
+    }
+    
+    /**
+     * Tests to see if the controller responds correctly if the language is in the url
+     */
+    public function testLanguageInURL() {
+        //Perform Request
+        $response=$this->get('fr/multilingual-test-controller/');
+        
+        
+        //Ensure a 200 response
         $this->assertEquals(200, $response->getStatusCode());
-	    
+        
         
         //Verify the response matches what is expected
-	    $this->assertEquals('i18n: fr_FR|Translatable: fr_FR', $response->getBody());
-	}
-	
-	/**
-	 * Tests to see if the controller responds correctly if the locale is in the url
-	 */
-	public function testLocaleInURL() {
-	    //Enable locale urls
-	    Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
-	
-	    //Set accept language to french
-	    $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
-	
-	    //Get the root url
-	    $response=$this->get('fr_FR/multilingual-test-controller/');
-	    
-	    
-	    //Ensure a 200 response
-        $this->assertEquals(200, $response->getStatusCode());
-	    
-        
-        //Verify the response matches what is expected
-	    $this->assertEquals('i18n: fr_FR|Translatable: fr_FR', $response->getBody());
-	}
-	
-	/**
-	 * Tests to see if the controller responds correctly if the language is in the url
-	 */
-	public function testAutoDetectLanguage() {
-	    //Set accept language to french
+        $this->assertEquals('i18n: fr_FR|Translatable: fr_FR', $response->getBody());
+    }
+    
+    /**
+     * Tests to see if the controller responds correctly if the locale is in the url
+     */
+    public function testLocaleInURL() {
+        //Enable locale urls
+        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
+    
+        //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
-		Translatable::set_default_locale('fr_FR');
+    
+        //Get the root url
+        $response=$this->get('fr_FR/multilingual-test-controller/');
+        
+        
+        //Ensure a 200 response
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Verify the response matches what is expected
+        $this->assertEquals('i18n: fr_FR|Translatable: fr_FR', $response->getBody());
+    }
+    
+    /**
+     * Tests to see if the controller responds correctly if the language is in the url
+     */
+    public function testAutoDetectLanguage() {
+        //Set accept language to french
+        $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
+        Translatable::set_default_locale('fr_FR');
         Translatable::set_current_locale('fr_FR');
         i18n::set_locale('fr_FR');
         
-	    
+        
         //Perform Request
-	    $response=$this->get('MultilingualTestController');
-	    
-	    
-	    //Ensure a 200 response
+        $response=$this->get('MultilingualTestController');
+        
+        
+        //Ensure a 200 response
         $this->assertEquals(200, $response->getStatusCode());
-	    
+        
         
         //Verify the response matches what is expected
-	    $this->assertEquals('i18n: fr_FR|Translatable: fr_FR', $response->getBody());
-	}
-	
-	/**
-	 * Tests to see if the controller responds correctly if the language is in the url
-	 */
-	public function testInvalidLanguageURL() {
-	    //Perform Request
-	    $response=$this->get('es/multilingual-test-controller/');
-	    
-	    
-	    //Ensure a 301 response
+        $this->assertEquals('i18n: fr_FR|Translatable: fr_FR', $response->getBody());
+    }
+    
+    /**
+     * Tests to see if the controller responds correctly if the language is in the url
+     */
+    public function testInvalidLanguageURL() {
+        //Perform Request
+        $response=$this->get('es/multilingual-test-controller/');
+        
+        
+        //Ensure a 301 response
         $this->assertEquals(301, $response->getStatusCode());
         
         
         //Verify the redirect url matches the default
-	    $this->assertEquals(Director::baseURL().'en/multilingual-test-controller', $response->getHeader('Location'));
-	}
+        $this->assertEquals(Director::baseURL().'en/multilingual-test-controller', $response->getHeader('Location'));
+    }
 }
 
 class MultilingualTestController extends Controller implements TestOnly {

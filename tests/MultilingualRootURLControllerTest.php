@@ -1,8 +1,8 @@
 <?php
 class MultilingualRootURLControllerTest extends FunctionalTest {
-	public static $fixture_file = 'MultilingualTest.yml';
+    public static $fixture_file = 'MultilingualTest.yml';
     
-	private $origLocale;
+    private $origLocale;
     private $origCurrentLocale;
     private $origAllowedLocales;
     private $origi18nLocale;
@@ -13,7 +13,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     protected $autoFollowRedirection = false;
     
     public function setUp() {
-		parent::setUp();
+        parent::setUp();
         
         
         //Remap translation group for home pages
@@ -39,7 +39,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         Translatable::set_current_locale('en_US');
         
         $this->origLocale=Translatable::default_locale();
-		Translatable::set_default_locale('en_US');
+        Translatable::set_default_locale('en_US');
         
         $this->origi18nLocale=i18n::get_locale();
         i18n::set_locale('en_US');
@@ -49,12 +49,12 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         
         MultilingualRootURLController::reset();
     }
-	
-	public function tearDown() {
+    
+    public function tearDown() {
         MultilingualRootURLController::set_use_locale_url($this->origLocaleRoutingEnabled);
         
-		Translatable::set_current_locale($this->origCurrentLocale);
-		Translatable::set_default_locale($this->origLocale);
+        Translatable::set_current_locale($this->origCurrentLocale);
+        Translatable::set_default_locale($this->origLocale);
         Translatable::set_allowed_locales($this->origAllowedLocales);
         
         i18n::set_locale($this->origi18nLocale);
@@ -69,13 +69,13 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         
         MultilingualRootURLController::reset();
         
-		parent::tearDown();
-	}
+        parent::tearDown();
+    }
     
-	/**
-	 * Tests to ensure that the site redirects to the default language root url when the user hits the site root
-	 */
-	public function testEnglishLangRootRouting() {
+    /**
+     * Tests to ensure that the site redirects to the default language root url when the user hits the site root
+     */
+    public function testEnglishLangRootRouting() {
         //Get the root url
         $response=$this->get('');
         
@@ -87,15 +87,15 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
                             Controller::join_links(Director::baseURL().'en/'),
                             $response->getHeader('Location')
                         );
-	}
+    }
     
-	/**
-	 * Tests to ensure that the site redirects to the french language root url when the user hits the site root and the users accept language is french first
-	 */
-	public function testFrenchLangRootRouting() {
+    /**
+     * Tests to ensure that the site redirects to the french language root url when the user hits the site root and the users accept language is french first
+     */
+    public function testFrenchLangRootRouting() {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
-		
+        
         //Get the root url
         $response=$this->get('');
         
@@ -107,12 +107,12 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
                             Controller::join_links(Director::baseURL().'fr/'),
                             $response->getHeader('Location')
                         );
-	}
-	
-	/**
-	 * Tests to ensure that the site redirects to the default locale root url when the user hits the site root and the MultilingualRootURLController.UseLocaleURL is set to true
-	 */
-	public function testEnglishLocaleRootRouting() {
+    }
+    
+    /**
+     * Tests to ensure that the site redirects to the default locale root url when the user hits the site root and the MultilingualRootURLController.UseLocaleURL is set to true
+     */
+    public function testEnglishLocaleRootRouting() {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
         
@@ -127,18 +127,18 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
                             Controller::join_links(Director::baseURL().'en_US/'),
                             $response->getHeader('Location')
                         );
-	}
+    }
     
-	/**
-	 * Tests to ensure that the site redirects to the french locale root url when the user hits the site root and the users accept language is french first with the MultilingualRootURLController.UseLocaleURL is set to true
-	 */
-	public function testFrenchLocaleRootRouting() {
+    /**
+     * Tests to ensure that the site redirects to the french locale root url when the user hits the site root and the users accept language is french first with the MultilingualRootURLController.UseLocaleURL is set to true
+     */
+    public function testFrenchLocaleRootRouting() {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
         
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
-		
+        
         //Get the root url
         $response=$this->get('');
         
@@ -150,24 +150,24 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
                             Controller::join_links(Director::baseURL().'fr_FR/'),
                             $response->getHeader('Location')
                         );
-	}
+    }
     
-	/**
-	 * Verifies the correct home page is detected
-	 * @TODO Shouldn't this be failing, should it not be en/home?
-	 */
+    /**
+     * Verifies the correct home page is detected
+     * @TODO Shouldn't this be failing, should it not be en/home?
+     */
     public function testEnglishGetHomepageLink() {
         $this->assertEquals('home', MultilingualRootURLController::get_homepage_link());
     }
     
-	/**
-	 * Verifies the correct home page is detected for the french locale
-	 * @TODO Shouldn't this be failing, should it not be fr/maison?
-	 */
+    /**
+     * Verifies the correct home page is detected for the french locale
+     * @TODO Shouldn't this be failing, should it not be fr/maison?
+     */
     public function testFrenchGetHomepageLink() {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
-		Translatable::set_default_locale('fr_FR');
+        Translatable::set_default_locale('fr_FR');
         Translatable::set_current_locale('fr_FR');
         i18n::set_locale('fr_FR');
         
