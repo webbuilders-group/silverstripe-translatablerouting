@@ -51,7 +51,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     }
     
     public function tearDown() {
-        MultilingualRootURLController::set_use_locale_url($this->origLocaleRoutingEnabled);
+        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', $this->origLocaleRoutingEnabled);
         
         Translatable::set_current_locale($this->origCurrentLocale);
         Translatable::set_default_locale($this->origLocale);
