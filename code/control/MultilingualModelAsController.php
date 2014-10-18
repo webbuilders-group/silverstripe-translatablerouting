@@ -14,7 +14,38 @@ class MultilingualModelAsController extends ModelAsController {
         
         //Get the local from the language param
         if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-            $locale=$request->param('Language');
+            if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+                //Language is missing a dash 404
+                if(strpos($request->param('Language'), '-')===false) {
+                    //Locale not found 404
+                    if($response=ErrorPage::response_for(404)) {
+                        return $response;
+                    }else {
+                        $this->httpError(404, 'The requested page could not be found.');
+                    }
+                    
+                    return $this->response;
+                }
+            
+                $locale=explode('-', $request->param('Language'));
+                $locale[1]=strtoupper($locale[1]);
+                
+                //Make sure that the language is all lowercase
+                if($request->param('Language')==implode('-', $locale)) {
+                    //Locale not found 404
+                    if($response=ErrorPage::response_for(404)) {
+                        return $response;
+                    }else {
+                        $this->httpError(404, 'The requested page could not be found.');
+                    }
+                    
+                    return $this->response;
+                }
+                
+                $locale=implode('_', $locale);
+            }else {
+                $locale=$request->param('Language');
+            }
         }else if(strpos($request->param('Language'), '_')!==false) {
             //Locale not found 404
             if($response=ErrorPage::response_for(404)) {

@@ -2,9 +2,6 @@
 Name: translatablerouting
 After: 'framework/*', 'cms/*', 'translatable/*'
 ---
-MultilingualRootURLController:
-    UseLocaleURL: false
-
 SiteTree:
     extensions:
         - 'MultilingualSiteTreeExtension'

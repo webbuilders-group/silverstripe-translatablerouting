@@ -1,6 +1,18 @@
 <?php
 class MultilingualRootURLController extends RootURLController {
-    private static $useLocaleURL=false;
+    /**
+     * Tells the routing controllers to use the locale url or not i.e /en_US/ instead of /en/
+     * @default false
+     * @config MultilingualRootURLController.UseLocaleURL
+     */
+    private static $UseLocaleURL=false;
+    
+    /**
+     * Tells the routing controllers to use a dashed locale or not i.e /en-us/ instead of /en_US/ requires MultilingualRootURLController.UseLocaleURL to be true
+     * @default false
+     * @config MultilingualRootURLController.UseDashLocale
+     */
+    private static $UseDashLocale=false;
     
     public function handleRequest(SS_HTTPRequest $request, DataModel $model=null) {
         self::$is_at_root=true;
@@ -11,7 +23,38 @@ class MultilingualRootURLController extends RootURLController {
         
         if($language=$request->param('Language')) {
             if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-                $locale=$language;
+                if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+                    //Language is missing a dash 404
+                    if(strpos($language, '-')===false) {
+                        //Locale not found 404
+                        if($response=ErrorPage::response_for(404)) {
+                            return $response;
+                        }else {
+                            $this->httpError(404, 'The requested page could not be found.');
+                        }
+                        
+                        return $this->response;
+                    }
+                
+                    $locale=explode('-', $language);
+                    $locale[1]=strtoupper($locale[1]);
+                    
+                    //Make sure that the language is all lowercase
+                    if($language==implode('-', $locale)) {
+                        //Locale not found 404
+                        if($response=ErrorPage::response_for(404)) {
+                            return $response;
+                        }else {
+                            $this->httpError(404, 'The requested page could not be found.');
+                        }
+                        
+                        return $this->response;
+                    }
+                    
+                    $locale=implode('_', $locale);
+                }else {
+                    $locale=$language;
+                }
             }else if(strpos($request->param('Language'), '_')!==false) {
                 //Locale not found 404
                 if($response=ErrorPage::response_for(404)) {
@@ -37,7 +80,7 @@ class MultilingualRootURLController extends RootURLController {
                     $this->response->redirect(Director::absoluteBaseURL().'dev/build?returnURL='.(isset($_GET['url']) ? urlencode($_GET['url']):null));
                     return $this->response;
                 }
-            	
+                
                 $request->setUrl($language.'/'.self::get_homepage_link().'/');
                 $request->match('$Language/$URLSegment//$Action', true);
                 
@@ -60,7 +103,11 @@ class MultilingualRootURLController extends RootURLController {
         //No Locale Param so detect browser language and redirect
         if($locale=self::detect_browser_locale()) {
             if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-                $language=$locale;
+                if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+                    $language=str_replace('_', '-', strtolower($locale));
+                }else {
+                    $language=$locale;
+                }
             }else {
                 $language=i18n::get_lang_from_locale($locale);
             }
@@ -74,7 +121,17 @@ class MultilingualRootURLController extends RootURLController {
         }
         
         
-        $this->redirect(Controller::join_links(Director::baseURL(), (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
+        if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+            if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+                $language=str_replace('_', '-', strtolower(Translatable::default_locale()));
+            }else {
+                $language=Translatable::default_locale();
+            }
+        }else {
+            $language=Translatable::default_lang();
+        }
+        
+        $this->redirect(Controller::join_links(Director::baseURL(), $language.'/'), 301);
         
         $this->popCurrent();
         return $this->response;
@@ -123,7 +180,7 @@ class MultilingualRootURLController extends RootURLController {
                 
                 $prioritisedLocales[$priority][]=$language;
             }
-            	
+                
             // sort list based on value
             krsort($prioritisedLocales, SORT_NUMERIC);
         }

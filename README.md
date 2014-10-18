@@ -16,7 +16,7 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 * Download the module from here https://github.com/webbuilders-group/silverstripe-translatablerouting/archive/master.zip
 * Extract the downloaded archive into your site root so that the destination folder is called translatablerouting, opening the extracted folder should contain _config.php in the root along with other files/folders
 * Run dev/build?flush=all to regenerate the manifest
- 
+
 If you prefer you may also install using composer:
 ```
 composer require webbuilders-group/translatablerouting
@@ -40,7 +40,7 @@ public function Link($action=null) {
  * and returned in its full form.
  * @param {string} $action See {@link Link()}
  * @return {string}
- * 
+ *
  * @uses Translatable::get_homepage_link_by_locale()
  */
 public function RelativeLink($action=null) {
@@ -49,7 +49,7 @@ public function RelativeLink($action=null) {
     } else {
         $base=$this->URLSegment;
     }
-    
+
     //Unset base for homepage URLSegments in their default language. Homepages with action parameters or in different languages need to retain their URLSegment. We can only do this if the homepage is on the root level.
     if(!$action && $base==Translatable::get_homepage_link_by_locale($this->Locale) && !$this->ParentID) {
         $base = null;
@@ -63,19 +63,19 @@ As well for your Page_Controller class you must add this for this module to func
 ```php
 public function init() {
     parent::init();
-    
-    
+
+
     // If we've accessed the homepage as /home/, then we should redirect to /.
     if($this->dataRecord && $this->dataRecord instanceof SiteTree && MultilingualRootURLController::should_be_on_root($this->dataRecord) && (!isset($this->urlParams['Action']) || !$this->urlParams['Action']) && !$_POST && !$_FILES && !$this->redirectedTo()) {
         $getVars=$_GET;
         unset($getVars['url']);
-        
+
         if($getVars) {
             $url=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/?'.http_build_query($getVars);
         }else {
             $url=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/';
         }
-        
+
         $this->redirect($url, 301);
         return;
     }
@@ -87,6 +87,13 @@ If you want to use locale's (for example en_US) as your url pattern instead of j
 ```yml
 MultilingualRootURLController:
     UseLocaleURL: true
+```
+
+You may also choose to use a dashed locale instead of the underscored locale (i.e en-us instead of en_US). As with the above you need to add this to your mysite/_config/config.yml, making sure you set the rule to be after "translatablerouting/*"
+```yml
+MultilingualRootURLController:
+    UseLocaleURL: true
+    UseDashLocale: true
 ```
 
 ## Generic Controllers
