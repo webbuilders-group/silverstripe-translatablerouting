@@ -32,7 +32,7 @@ You must add the following methods to your Page class for this module to functio
  * @return {string}
  */
 public function Link($action=null) {
-    return Controller::join_links(Director::baseURL(), (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->Locale:i18n::get_lang_from_locale($this->Locale)), $this->RelativeLink($action));
+    return Controller::join_links(Director::baseURL(), (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? (Config::inst()->get('MultilingualRootURLController', 'UseDashLocale') ? str_replace('_', '-', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)), $this->RelativeLink($action));
 }
 
 /**
@@ -71,9 +71,9 @@ public function init() {
         unset($getVars['url']);
 
         if($getVars) {
-            $url=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/?'.http_build_query($getVars);
+            $url=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? (Config::inst()->get('MultilingualRootURLController', 'UseDashLocale') ? str_replace('_', '-', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)).'/?'.http_build_query($getVars);
         }else {
-            $url=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->Locale:i18n::get_lang_from_locale($this->Locale)).'/';
+            $url=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? (Config::inst()->get('MultilingualRootURLController', 'UseDashLocale') ? str_replace('_', '-', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)).'/';
         }
 
         $this->redirect($url, 301);
