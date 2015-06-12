@@ -19,7 +19,7 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 
 If you prefer you may also install using composer:
 ```
-composer require webbuilders-group/translatablerouting
+composer require webbuilders-group/silverstripe-translatablerouting
 ```
 
 
