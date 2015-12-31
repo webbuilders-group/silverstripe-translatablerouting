@@ -1,22 +1,24 @@
 <?php
-class MultilingualOldPageRedirector extends Extension {
+class MultilingualOldPageRedirector extends Extension
+{
     /**
      * On every URL that generates a 404, we'll capture it here and see if we can
      * find an old URL that it should be redirecting to.
      *
      * @param SS_HTTPResponse $request The request object
      */
-    public function onBeforeHTTPError404($request) {
+    public function onBeforeHTTPError404($request)
+    {
         // Build up the request parameters
-        $params=array_filter(array_values($request->allParams()), function($v) { return ($v !== NULL); });
+        $params=array_filter(array_values($request->allParams()), function ($v) { return ($v !== null); });
         unset($params[0]); //Remove the locale from the url
-        
+
         $getvars=$request->getVars();
         unset($getvars['url']);
         
         $page=self::find_old_page($params);
         
-        if($page) {
+        if ($page) {
             $res=new SS_HTTPResponse();
             $res->redirect(
                 Controller::join_links(
@@ -37,22 +39,23 @@ class MultilingualOldPageRedirector extends Extension {
      *
      * @return string|boolean False, or the new URL
      */
-    public static function find_old_page($params, $parent = null, $redirect = false) {
+    public static function find_old_page($params, $parent = null, $redirect = false)
+    {
         $URL=Convert::raw2sql(array_shift($params));
         if (empty($URL)) {
             return false;
         }
         
-        if($parent) {
+        if ($parent) {
             $page=SiteTree::get()->filter(array('ParentID' => $parent->ID, 'URLSegment' => $URL))->First();
-        }else {
+        } else {
             $page=SiteTree::get()->filter(array('URLSegment' => $URL))->First();
         }
         
-        if(!$page) {
+        if (!$page) {
             // If we haven't found a candidate, lets resort to finding an old page with this URL segment
             // TODO: Rewrite using ORM syntax
-            $query=new SQLQuery (
+            $query=new SQLQuery(
                                 '"RecordID"',
                                 '"SiteTree_versions"',
                                 "\"URLSegment\" = '$URL' AND \"WasPublished\" = 1 AND \"Locale\"='".Translatable::get_current_locale()."'". ($parent ? ' AND "ParentID" = ' . $parent->ID : ''),
@@ -63,7 +66,7 @@ class MultilingualOldPageRedirector extends Extension {
                             );
             
             $record=$query->execute()->first();
-            if($record) {
+            if ($record) {
                 $page=SiteTree::get()->byID($record['RecordID']);
                 $redirect=true;
             }
@@ -92,4 +95,3 @@ class MultilingualOldPageRedirector extends Extension {
         return false;
     }
 }
-?>

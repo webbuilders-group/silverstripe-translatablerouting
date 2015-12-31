@@ -1,5 +1,6 @@
 <?php
-class MultilingualRootURLController extends RootURLController {
+class MultilingualRootURLController extends RootURLController
+{
     /**
      * Tells the routing controllers to use the locale url or not i.e /en_US/ instead of /en/
      * @default false
@@ -14,22 +15,23 @@ class MultilingualRootURLController extends RootURLController {
      */
     private static $UseDashLocale=false;
     
-    public function handleRequest(SS_HTTPRequest $request, DataModel $model=null) {
+    public function handleRequest(SS_HTTPRequest $request, DataModel $model=null)
+    {
         self::$is_at_root=true;
         $this->setDataModel($model);
         
         $this->pushCurrent();
         $this->init();
         
-        if($language=$request->param('Language')) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-                if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+        if ($language=$request->param('Language')) {
+            if (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+                if (Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
                     //Language is missing a dash 404
-                    if(strpos($language, '-')===false) {
+                    if (strpos($language, '-')===false) {
                         //Locale not found 404
-                        if($response=ErrorPage::response_for(404)) {
+                        if ($response=ErrorPage::response_for(404)) {
                             return $response;
-                        }else {
+                        } else {
                             $this->httpError(404, 'The requested page could not be found.');
                         }
                         
@@ -40,11 +42,11 @@ class MultilingualRootURLController extends RootURLController {
                     $locale[1]=strtoupper($locale[1]);
                     
                     //Make sure that the language is all lowercase
-                    if($language==implode('-', $locale)) {
+                    if ($language==implode('-', $locale)) {
                         //Locale not found 404
-                        if($response=ErrorPage::response_for(404)) {
+                        if ($response=ErrorPage::response_for(404)) {
                             return $response;
-                        }else {
+                        } else {
                             $this->httpError(404, 'The requested page could not be found.');
                         }
                         
@@ -52,30 +54,30 @@ class MultilingualRootURLController extends RootURLController {
                     }
                     
                     $locale=implode('_', $locale);
-                }else {
+                } else {
                     $locale=$language;
                 }
-            }else if(strpos($request->param('Language'), '_')!==false) {
+            } elseif (strpos($request->param('Language'), '_')!==false) {
                 //Locale not found 404
-                if($response=ErrorPage::response_for(404)) {
+                if ($response=ErrorPage::response_for(404)) {
                     return $response;
-                }else {
+                } else {
                     $this->httpError(404, 'The requested page could not be found.');
                 }
                 
                 return $this->response;
-            }else {
+            } else {
                 $locale=i18n::get_locale_from_lang($language);
             }
             
-            if(in_array($locale, Translatable::get_allowed_locales())) {
+            if (in_array($locale, Translatable::get_allowed_locales())) {
                 Cookie::set('language', $language);
                 
                 Translatable::set_current_locale($locale);
                 i18n::set_locale($locale);
                 
                 
-                if(!DB::isActive() || !ClassInfo::hasTable('SiteTree')) {
+                if (!DB::isActive() || !ClassInfo::hasTable('SiteTree')) {
                     $this->response=new SS_HTTPResponse();
                     $this->response->redirect(Director::absoluteBaseURL().'dev/build?returnURL='.(isset($_GET['url']) ? urlencode($_GET['url']):null));
                     return $this->response;
@@ -90,7 +92,7 @@ class MultilingualRootURLController extends RootURLController {
                 
                 $this->popCurrent();
                 return $result;
-            }else {
+            } else {
                 //URL Param Locale is not allowed so redirect to default
                 $this->redirect(Controller::join_links(Director::baseURL(), (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
                 
@@ -101,14 +103,14 @@ class MultilingualRootURLController extends RootURLController {
         
         
         //No Locale Param so detect browser language and redirect
-        if($locale=self::detect_browser_locale()) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-                if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+        if ($locale=self::detect_browser_locale()) {
+            if (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+                if (Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
                     $language=str_replace('_', '-', strtolower($locale));
-                }else {
+                } else {
                     $language=$locale;
                 }
-            }else {
+            } else {
                 $language=i18n::get_lang_from_locale($locale);
             }
             
@@ -121,13 +123,13 @@ class MultilingualRootURLController extends RootURLController {
         }
         
         
-        if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+        if (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+            if (Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
                 $language=str_replace('_', '-', strtolower(Translatable::default_locale()));
-            }else {
+            } else {
                 $language=Translatable::default_locale();
             }
-        }else {
+        } else {
             $language=Translatable::default_lang();
         }
         
@@ -141,24 +143,25 @@ class MultilingualRootURLController extends RootURLController {
      * Determines the locale best matching the given list of browser locales
      * @return {string} The matching locale, or null if none could be determined
      */
-    public static function detect_browser_locale() {
-        if($language=Cookie::get('language')) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+    public static function detect_browser_locale()
+    {
+        if ($language=Cookie::get('language')) {
+            if (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
                 $locale=$language;
-            }else {
+            } else {
                 $locale=i18n::get_locale_from_lang($language);
             }
             
-            if(in_array($locale, Translatable::get_allowed_locales())) {
+            if (in_array($locale, Translatable::get_allowed_locales())) {
                 return $locale;
-            }else {
+            } else {
                 Cookie::force_expiry('language');
             }
         }
         
         // Given multiple canditates, narrow down the final result using the client's preferred languages
         $inputLocales=(array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER) ? $_SERVER['HTTP_ACCEPT_LANGUAGE']:null);
-        if(empty($inputLocales)) {
+        if (empty($inputLocales)) {
             return null;
         }
     
@@ -167,14 +170,14 @@ class MultilingualRootURLController extends RootURLController {
         preg_match_all('/(?<code>[a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(?<priority>1|0\.[0-9]+))?/i', $inputLocales, $parsedLocales);
     
         $prioritisedLocales=array();
-        if(count($parsedLocales['code'])) {
+        if (count($parsedLocales['code'])) {
             // create a list like "en" => 0.8
             $parsedLocales=array_combine($parsedLocales['code'], $parsedLocales['priority']);
     
             // Generate nested list of priorities => [languages]
             foreach ($parsedLocales as $language => $priority) {
                 $priority=(empty($priority) ? 1.0:floatval($priority));
-                if(empty($prioritisedLocales[$priority])) {
+                if (empty($prioritisedLocales[$priority])) {
                     $prioritisedLocales[$priority] = array();
                 }
                 
@@ -187,9 +190,9 @@ class MultilingualRootURLController extends RootURLController {
     
         // Check each requested language against loaded languages
         foreach ($prioritisedLocales as $priority=>$parsedLocales) {
-            foreach($parsedLocales as $browserLocale) {
-                foreach(Translatable::get_allowed_locales() as $language) {
-                    if(stripos(preg_replace('/_/', '-', $language), $browserLocale)===0) {
+            foreach ($parsedLocales as $browserLocale) {
+                foreach (Translatable::get_allowed_locales() as $language) {
+                    if (stripos(preg_replace('/_/', '-', $language), $browserLocale)===0) {
                         return $language;
                     }
                 }
@@ -206,8 +209,9 @@ class MultilingualRootURLController extends RootURLController {
      * @param {SiteTree} $page
      * @return {bool}
      */
-    public static function should_be_on_root(SiteTree $page) {
-        if(!self::$is_at_root && self::get_homepage_link()==trim($page->RelativeLink(true), '/')) {
+    public static function should_be_on_root(SiteTree $page)
+    {
+        if (!self::$is_at_root && self::get_homepage_link()==trim($page->RelativeLink(true), '/')) {
             return true;
         }
         
@@ -220,7 +224,8 @@ class MultilingualRootURLController extends RootURLController {
      * 
      * @deprecated 3.2 Use the "MultilingualRootURLController.UseLocaleURL" config setting instead
      */
-    public static function set_use_locale_url($value) {
+    public static function set_use_locale_url($value)
+    {
         Deprecation::notice('3.2', 'Use the "MultilingualRootURLController.UseLocaleURL" config setting instead');
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', $value);
     }
@@ -231,9 +236,9 @@ class MultilingualRootURLController extends RootURLController {
      * 
      * @deprecated 3.2 Use the "MultilingualRootURLController.UseLocaleURL" config setting instead
      */
-    public static function get_use_locale_url() {
+    public static function get_use_locale_url()
+    {
         Deprecation::notice('3.2', 'Use the "MultilingualRootURLController.UseLocaleURL" config setting instead');
         return Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
     }
 }
-?>

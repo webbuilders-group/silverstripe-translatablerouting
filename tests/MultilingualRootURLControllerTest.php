@@ -1,5 +1,6 @@
 <?php
-class MultilingualRootURLControllerTest extends FunctionalTest {
+class MultilingualRootURLControllerTest extends FunctionalTest
+{
     public static $fixture_file = 'MultilingualTest.yml';
     
     private $origLocale;
@@ -13,7 +14,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     
     protected $autoFollowRedirection = false;
     
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         
         
@@ -54,7 +56,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         MultilingualRootURLController::reset();
     }
     
-    public function tearDown() {
+    public function tearDown()
+    {
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', $this->origLocaleRoutingEnabled);
         Config::inst()->update('MultilingualRootURLController', 'UseDashLocale', $this->origDashLocaleEnabled);
         
@@ -66,7 +69,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         
         Cookie::force_expiry('language');
         
-        if($this->origCookieLocale) {
+        if ($this->origCookieLocale) {
             Cookie::set('language', $this->origCookieLocale);
         }
         
@@ -80,7 +83,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     /**
      * Tests to ensure that the site redirects to the default language root url when the user hits the site root
      */
-    public function testEnglishLangRootRouting() {
+    public function testEnglishLangRootRouting()
+    {
         //Get the root url
         $response=$this->get('');
         
@@ -97,7 +101,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     /**
      * Tests to ensure that the site redirects to the french language root url when the user hits the site root and the users accept language is french first
      */
-    public function testFrenchLangRootRouting() {
+    public function testFrenchLangRootRouting()
+    {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
         
@@ -117,7 +122,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     /**
      * Tests to ensure that the site redirects to the default locale root url when the user hits the site root and the MultilingualRootURLController.UseLocaleURL is set to true
      */
-    public function testEnglishLocaleRootRouting() {
+    public function testEnglishLocaleRootRouting()
+    {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
         
@@ -137,7 +143,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     /**
      * Tests to ensure that the site redirects to the french locale root url when the user hits the site root and the users accept language is french first with the MultilingualRootURLController.UseLocaleURL is set to true
      */
-    public function testFrenchLocaleRootRouting() {
+    public function testFrenchLocaleRootRouting()
+    {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
         
@@ -160,7 +167,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     /**
      * Tests to ensure that the site redirects to the default locale root url when the user hits the site root and the MultilingualRootURLController.UseLocaleURL is set to true and MultilingualRootURLController.UseDashLocale is set to true
      */
-    public function testEnglishDashLocaleRootRouting() {
+    public function testEnglishDashLocaleRootRouting()
+    {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
         Config::inst()->update('MultilingualRootURLController', 'UseDashLocale', true);
@@ -189,7 +197,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     /**
      * Tests to ensure that the site redirects to the french locale root url when the user hits the site root and the users accept language is french first with the MultilingualRootURLController.UseLocaleURL is set to true and MultilingualRootURLController.UseDashLocale is set to true
      */
-    public function testFrenchDashLocaleRootRouting() {
+    public function testFrenchDashLocaleRootRouting()
+    {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
         Config::inst()->update('MultilingualRootURLController', 'UseDashLocale', true);
@@ -221,14 +230,16 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     /**
      * Verifies the correct home page is detected
      */
-    public function testEnglishGetHomepageLink() {
+    public function testEnglishGetHomepageLink()
+    {
         $this->assertEquals('home', MultilingualRootURLController::get_homepage_link());
     }
     
     /**
      * Verifies the correct home page is detected for the french locale
      */
-    public function testFrenchGetHomepageLink() {
+    public function testFrenchGetHomepageLink()
+    {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
         Translatable::set_default_locale('fr_FR');
@@ -238,4 +249,3 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         $this->assertEquals('maison', MultilingualRootURLController::get_homepage_link());
     }
 }
-?>
