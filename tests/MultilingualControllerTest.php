@@ -1,5 +1,6 @@
 <?php
-class MultilingualControllerTest extends FunctionalTest {
+class MultilingualControllerTest extends FunctionalTest
+{
     public static $fixture_file='MultilingualTest.yml';
     
     private $origLocale;
@@ -12,7 +13,8 @@ class MultilingualControllerTest extends FunctionalTest {
     
     protected $autoFollowRedirection=false;
     
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         
         $this->origLocaleRoutingEnabled=Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
@@ -47,7 +49,8 @@ class MultilingualControllerTest extends FunctionalTest {
         MultilingualRootURLController::reset();
     }
     
-    public function tearDown() {
+    public function tearDown()
+    {
         MultilingualRootURLController::set_use_locale_url($this->origLocaleRoutingEnabled);
         
         Translatable::set_current_locale($this->origCurrentLocale);
@@ -58,7 +61,7 @@ class MultilingualControllerTest extends FunctionalTest {
         
         Cookie::force_expiry('language');
         
-        if($this->origCookieLocale) {
+        if ($this->origCookieLocale) {
             Cookie::set('language', $this->origCookieLocale);
         }
         
@@ -72,7 +75,8 @@ class MultilingualControllerTest extends FunctionalTest {
     /**
      * Tests to see if the controller responds correctly if the language is in the url
      */
-    public function testLanguageInURL() {
+    public function testLanguageInURL()
+    {
         //Perform Request
         $response=$this->get('fr/multilingual-test-controller/');
         
@@ -88,7 +92,8 @@ class MultilingualControllerTest extends FunctionalTest {
     /**
      * Tests to see if the controller responds correctly if the locale is in the url
      */
-    public function testLocaleInURL() {
+    public function testLocaleInURL()
+    {
         //Enable locale urls
         Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
     
@@ -110,7 +115,8 @@ class MultilingualControllerTest extends FunctionalTest {
     /**
      * Tests to see if the controller responds correctly if the language is in the url
      */
-    public function testAutoDetectLanguage() {
+    public function testAutoDetectLanguage()
+    {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
         Translatable::set_default_locale('fr_FR');
@@ -133,7 +139,8 @@ class MultilingualControllerTest extends FunctionalTest {
     /**
      * Tests to see if the controller responds correctly if the language is in the url
      */
-    public function testInvalidLanguageURL() {
+    public function testInvalidLanguageURL()
+    {
         //Perform Request
         $response=$this->get('es/multilingual-test-controller/');
         
@@ -147,13 +154,14 @@ class MultilingualControllerTest extends FunctionalTest {
     }
 }
 
-class MultilingualTestController extends Controller implements TestOnly {
+class MultilingualTestController extends Controller implements TestOnly
+{
     private static $extensions=array(
                                     'MultilingualControllerExtension'
                                 );
     
-    public function index() {
+    public function index()
+    {
         return 'i18n: '.i18n::get_locale().'|Translatable: '.Translatable::get_current_locale();
     }
 }
-?>

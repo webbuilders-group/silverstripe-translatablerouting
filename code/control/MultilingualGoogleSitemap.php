@@ -1,5 +1,6 @@
 <?php
-class MultilingualGoogleSitemapController extends GoogleSitemapController {
+class MultilingualGoogleSitemapController extends GoogleSitemapController
+{
     private static $allowed_actions=array(
                                             'sitemap'
                                         );
@@ -10,8 +11,9 @@ class MultilingualGoogleSitemapController extends GoogleSitemapController {
      *
      * @return mixed
      */
-    public function sitemap() {
-        if($this->request->param('ID')=='SiteTree') {
+    public function sitemap()
+    {
+        if ($this->request->param('ID')=='SiteTree') {
             //Disable the locale filter
             Translatable::disable_locale_filter();
             
@@ -24,9 +26,8 @@ class MultilingualGoogleSitemapController extends GoogleSitemapController {
             
             
             return $items;
-        }else {
+        } else {
             return parent::sitemap();
         }
     }
 }
-?>

@@ -1,5 +1,6 @@
 <?php
-class MultilingualModelAsControllerTest extends FunctionalTest {
+class MultilingualModelAsControllerTest extends FunctionalTest
+{
     public static $fixture_file='MultilingualTest.yml';
     
     private $origLocale;
@@ -13,7 +14,8 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     
     protected $autoFollowRedirection=false;
     
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
         
         
@@ -21,13 +23,13 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         
         //Publish all english pages
         $pages=Page::get()->filter('Locale', 'en_US');
-        foreach($pages as $page) {
+        foreach ($pages as $page) {
             $page->publish('Stage', 'Live');
         }
         
         //Rewrite the french translation groups and publish french pages
         $pagesFR=Page::get()->filter('Locale', 'fr_FR');
-        foreach($pagesFR as $index=>$page) {
+        foreach ($pagesFR as $index=>$page) {
             $page->addTranslationGroup($pages->offsetGet($index)->ID, true);
             $page->publish('Stage', 'Live');
         }
@@ -63,7 +65,8 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         MultilingualRootURLController::reset();
     }
     
-    public function tearDown() {
+    public function tearDown()
+    {
         Config::inst()->update('MultilingualRootURLController', 'UseDashLocale', $this->origLocaleRoutingEnabled);
         Config::inst()->update('MultilingualRootURLController', 'UseDashLocale', $this->origDashLocaleEnabled);
         
@@ -75,7 +78,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         
         Cookie::force_expiry('language');
         
-        if($this->origCookieLocale) {
+        if ($this->origCookieLocale) {
             Cookie::set('language', $this->origCookieLocale);
         }
         
@@ -89,7 +92,8 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     /**
      * Verifies that the language/locale is required on the url
      */
-    public function testMultilingualRequired() {
+    public function testMultilingualRequired()
+    {
         $page=$this->objFromFixture('Page', 'page1');
         
         $response=$this->get($page->URLSegment);
@@ -102,7 +106,8 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     /**
      * Tests to ensure that loading a page not on the current language returns a page not found when accessing it via the wrong url
      */
-    public function testCrossLangNotFound() {
+    public function testCrossLangNotFound()
+    {
         $page=$this->objFromFixture('Page', 'page1_fr');
         
         $response=$this->get('en/'.$page->URLSegment.'/');
@@ -112,7 +117,8 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     /**
      * Tests to see if the english home page is the root url and the french home page is not for english browsers
      */
-    public function testEnglishShouldBeRoot() {
+    public function testEnglishShouldBeRoot()
+    {
         $default=$this->objFromFixture('Page', 'home');
         $defaultFR=$this->objFromFixture('Page', 'home_fr');
         
@@ -123,7 +129,8 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     /**
      * Tests to see if the french home page is the root url and the english home page is not for french browsers
      */
-    public function testFrenchShouldBeRoot() {
+    public function testFrenchShouldBeRoot()
+    {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
         Translatable::set_default_locale('fr_FR');
@@ -137,4 +144,3 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         $this->assertEquals(true, MultilingualRootURLController::should_be_on_root($defaultFR));
     }
 }
-?>

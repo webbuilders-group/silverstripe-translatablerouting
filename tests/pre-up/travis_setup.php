@@ -5,17 +5,17 @@ if (php_sapi_name() != 'cli') {
 }
 
 $opts = getopt('', array(
-	'target:', // required
+    'target:', // required
 ));
 
 // Sanity checks
-if(!$opts || !isset($opts['target'])) {
-	echo "Invalid arguments specified\n";
-	exit(1);
+if (!$opts || !isset($opts['target'])) {
+    echo "Invalid arguments specified\n";
+    exit(1);
 }
 
 $targetPath=$opts['target'];
-if(!file_exists("$targetPath/mysite/code/Page.php")) {
+if (!file_exists("$targetPath/mysite/code/Page.php")) {
     echo "Cannot find Page class in mysite\n";
     exit(1);
 }
@@ -65,4 +65,3 @@ $pageContents=preg_replace('/public function init\(\) \{(.*?)\}(.*?)\}/s', 'publ
 $f=fopen("$targetPath/mysite/code/Page.php", 'w');
 fwrite($f, $pageContents);
 fclose($f);
-?>
