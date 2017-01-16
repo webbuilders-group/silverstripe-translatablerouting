@@ -38,6 +38,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         
         $this->origCookieLocale=Cookie::get('language');
         Cookie::force_expiry('language');
+        Cookie::set('language', 'en');
         
         $this->origCurrentLocale=Translatable::get_current_locale();
         Translatable::set_current_locale('en_US');
