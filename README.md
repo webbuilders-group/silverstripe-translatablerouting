@@ -8,8 +8,8 @@ Extends SilverStripe Translatable module and replaces routing to enable multi-li
 * Ed Chipman ([UndefinedOffset](https://github.com/UndefinedOffset))
 
 ## Requirements
-* SilverStripe CMS 3.1.x
-* [SilverStripe Translatable](https://github.com/silverstripe/silverstripe-translatable/) 2.0+
+* SilverStripe CMS 3.2.x
+* [SilverStripe Translatable](https://github.com/silverstripe/silverstripe-translatable/) 2.1+
 
 
 ## Installation
