@@ -12,8 +12,20 @@ class MultilingualModelAsController extends ModelAsController {
         
         $this->pushCurrent();
         
-        //Get the local from the language param
-        if(MultilingualRootURLController::config()->UseLocaleURL) {
+        //Get the locale from the language param
+        if(MultilingualRootURLController::config()->use_country_only) {
+            $locale=MultilingualRootURLController::get_locale_from_country($request->param('Language'));
+            if(empty($locale)) {
+                //Locale not found 404
+                if($response=ErrorPage::response_for(404)) {
+                    return $response;
+                }else {
+                    $this->httpError(404, 'The requested page could not be found.');
+                }
+                
+                return $this->response;
+            }
+        }else if(MultilingualRootURLController::config()->UseLocaleURL) {
             if(MultilingualRootURLController::config()->UseDashLocale) {
                 //Language is missing a dash 404
                 if(strpos($request->param('Language'), '-')===false) {
@@ -44,9 +56,21 @@ class MultilingualModelAsController extends ModelAsController {
                 
                 $locale=implode('_', $locale);
             }else {
+                //Language is missing an underscore 404
+                if(strpos($request->param('Language'), '_')===false) {
+                    //Locale not found 404
+                    if($response=ErrorPage::response_for(404)) {
+                        return $response;
+                    }else {
+                        $this->httpError(404, 'The requested page could not be found.');
+                    }
+                    
+                    return $this->response;
+                }
+                
                 $locale=$request->param('Language');
             }
-        }else if(strpos($request->param('Language'), '_')!==false) {
+        }else if(strpos($request->param('Language'), '_')!==false || strpos($request->param('Language'), '-')!==false) {//If the url has a locale in it
             //Locale not found 404
             if($response=ErrorPage::response_for(404)) {
                 return $response;
@@ -55,7 +79,7 @@ class MultilingualModelAsController extends ModelAsController {
             }
             
             return $this->response;
-        }else {
+        }else {//Potentially a language code
             $locale=i18n::get_locale_from_lang($request->param('Language'));
         }
         

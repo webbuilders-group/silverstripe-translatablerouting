@@ -14,6 +14,13 @@ class MultilingualRootURLController extends RootURLController {
      */
     private static $UseDashLocale=false;
     
+    /**
+     * 
+     * @default false
+     * @config MultilingualRootURLController.use_country_only
+     */
+    private static $use_country_only=false;
+    
     
     public function handleRequest(SS_HTTPRequest $request, DataModel $model=null) {
         self::$is_at_root=true;
@@ -22,8 +29,21 @@ class MultilingualRootURLController extends RootURLController {
         $this->pushCurrent();
         $this->init();
         
+        //Get the locale from the language param
         if($language=$request->param('Language')) {
-            if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->use_country_only) {
+                $locale=self::get_locale_from_country($request->param('Language'));
+                if(empty($locale)) {
+                    //Locale not found 404
+                    if($response=ErrorPage::response_for(404)) {
+                        return $response;
+                    }else {
+                        $this->httpError(404, 'The requested page could not be found.');
+                    }
+                    
+                    return $this->response;
+                }
+            }else if(MultilingualRootURLController::config()->UseLocaleURL) {
                 if(MultilingualRootURLController::config()->UseDashLocale) {
                     //Language is missing a dash 404
                     if(strpos($language, '-')===false) {
@@ -54,9 +74,21 @@ class MultilingualRootURLController extends RootURLController {
                     
                     $locale=implode('_', $locale);
                 }else {
+                    //Language is missing an underscore 404
+                    if(strpos($language, '_')===false) {
+                        //Locale not found 404
+                        if($response=ErrorPage::response_for(404)) {
+                            return $response;
+                        }else {
+                            $this->httpError(404, 'The requested page could not be found.');
+                        }
+                        
+                        return $this->response;
+                    }
+                    
                     $locale=$language;
                 }
-            }else if(strpos($request->param('Language'), '_')!==false) {
+            }else if(strpos($language, '_')!==false || strpos($language, '-')!==false) {//If the url has a locale in it
                 //Locale not found 404
                 if($response=ErrorPage::response_for(404)) {
                     return $response;
@@ -65,7 +97,7 @@ class MultilingualRootURLController extends RootURLController {
                 }
                 
                 return $this->response;
-            }else {
+            }else {//Potentially a language code
                 $locale=i18n::get_locale_from_lang($language);
             }
             
@@ -103,7 +135,9 @@ class MultilingualRootURLController extends RootURLController {
         
         //No Locale Param so detect browser language and redirect
         if($locale=self::detect_browser_locale()) {
-            if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->use_country_only) {
+                $language=$locale;
+            }else if(MultilingualRootURLController::config()->UseLocaleURL) {
                 if(MultilingualRootURLController::config()->UseDashLocale) {
                     $language=str_replace('_', '-', strtolower($locale));
                 }else {
@@ -113,7 +147,15 @@ class MultilingualRootURLController extends RootURLController {
                 $language=i18n::get_lang_from_locale($locale);
             }
             
+            
             Cookie::set('language', $language);
+            
+            
+            //For country only the language code in the url should be just the country code
+            if(MultilingualRootURLController::config()->use_country_only) {
+                $language=strtolower(preg_replace('/^(.*?)_(.*?)$/', '$2', $language));
+            }
+            
             
             $this->redirect(Controller::join_links(Director::baseURL(), $language).'/', 301);
             
@@ -173,7 +215,7 @@ class MultilingualRootURLController extends RootURLController {
             $parsedLocales=array_combine($parsedLocales['code'], $parsedLocales['priority']);
     
             // Generate nested list of priorities => [languages]
-            foreach ($parsedLocales as $language => $priority) {
+            foreach($parsedLocales as $language => $priority) {
                 $priority=(empty($priority) ? 1.0:floatval($priority));
                 if(empty($prioritisedLocales[$priority])) {
                     $prioritisedLocales[$priority] = array();
@@ -187,7 +229,7 @@ class MultilingualRootURLController extends RootURLController {
         }
     
         // Check each requested language against loaded languages
-        foreach ($prioritisedLocales as $priority=>$parsedLocales) {
+        foreach($prioritisedLocales as $priority=>$parsedLocales) {
             foreach($parsedLocales as $browserLocale) {
                 foreach(Translatable::get_allowed_locales() as $language) {
                     if(stripos(preg_replace('/_/', '-', $language), $browserLocale)===0) {
@@ -213,6 +255,30 @@ class MultilingualRootURLController extends RootURLController {
         }
         
         return false;
+    }
+    
+    /**
+     * Finds the locale based on the allowed locales and the country code
+     * @param {string} $country Country to try and find a locale for
+     * @return {string} Can potentially return null if there were no matches
+     */
+    public static function get_locale_from_country($country) {
+        $allowedLocales=Translatable::get_allowed_locales();
+        $potentialLocales=preg_grep('/_'.preg_quote(strtoupper($country), '/').'$/', array_keys(i18n::config()->all_locales));
+        
+        
+        //Remove Locales that are not allowed
+        $potentialLocales=array_intersect($allowedLocales, $potentialLocales);
+        
+        
+        //Verify there is only one match
+        if(count($potentialLocales)>1) {
+            user_error('Warning there are multiple allowed locales ("'.implode('", "', $potentialLocales).'") matching the given country "'.strtoupper($country).'" you should not use the MultilingualRootURLController.use_country_only with the current set of allowed locales: "'.implode('", "', Translatable::get_allowed_locales()).'"', E_USER_WARNING);
+        }
+        
+        
+        //Pop off the first element in the array
+        return array_shift($potentialLocales);
     }
 }
 ?>
