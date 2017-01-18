@@ -2,7 +2,7 @@ Translatable Routing
 =================
 [![Build Status](https://travis-ci.org/webbuilders-group/silverstripe-translatablerouting.png)](https://travis-ci.org/webbuilders-group/silverstripe-translatablerouting)  ![helpfulrobot](https://helpfulrobot.io/webbuilders-group/silverstripe-translatablerouting/badge)
 
-Extends SilverStripe Translatable module and replaces routing to enable multi-lingual urls
+Extends SilverStripe Translatable module and replaces routing to enable multi-lingual URLs. By default the URLs that will be generated with this module installed will look like ``http://example.com/en/`` though there are settings for using the locale instead of just the language code (see [the documentation](docs/en/configuration.md) for information).
 
 ## Maintainer Contact
 * Ed Chipman ([UndefinedOffset](https://github.com/UndefinedOffset))
