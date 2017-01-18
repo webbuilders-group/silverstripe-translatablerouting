@@ -15,8 +15,8 @@ class MultilingualControllerTest extends FunctionalTest {
     public function setUp() {
         parent::setUp();
         
-        $this->origLocaleRoutingEnabled=Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
-        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', false);
+        $this->origLocaleRoutingEnabled=MultilingualRootURLController::config()->UseLocaleURL;
+        MultilingualRootURLController::config()->UseLocaleURL=false;
         
         $this->origAcceptLanguage=$_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='en-US,en;q=0.5';
@@ -48,7 +48,7 @@ class MultilingualControllerTest extends FunctionalTest {
     }
     
     public function tearDown() {
-        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', $this->origLocaleRoutingEnabled);
+        MultilingualRootURLController::config()->UseLocaleURL=$this->origLocaleRoutingEnabled;
         
         Translatable::set_current_locale($this->origCurrentLocale);
         Translatable::set_default_locale($this->origLocale);
@@ -90,7 +90,7 @@ class MultilingualControllerTest extends FunctionalTest {
      */
     public function testLocaleInURL() {
         //Enable locale urls
-        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', true);
+        MultilingualRootURLController::config()->UseLocaleURL=true;
     
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';

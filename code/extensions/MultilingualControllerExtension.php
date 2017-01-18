@@ -21,12 +21,12 @@ class MultilingualControllerExtension extends Extension {
         if($request && $request->param('Language')) {
             $language=$request->param('Language');
             
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+            if(MultilingualRootURLController::config()->UseLocaleURL) {
                 $locale=$language;
             }else if(strpos($request->param('Language'), '_')!==false) {
                 //Invalid format so redirect to the default
                 $url=$request->getURL(true);
-                $default=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? Translatable::default_locale():Translatable::default_lang());
+                $default=(MultilingualRootURLController::config()->UseLocaleURL ? Translatable::default_locale():Translatable::default_lang());
                 
                 $this->owner->redirect(preg_replace('/^'.preg_quote($language, '/').'\//', $default.'/', $url), 301);
                 return;
@@ -45,7 +45,7 @@ class MultilingualControllerExtension extends Extension {
             }else {
                 //Unknown language so redirect to the default
                 $url=$request->getURL(true);
-                $default=(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? Translatable::default_locale():Translatable::default_lang());
+                $default=(MultilingualRootURLController::config()->UseLocaleURL ? Translatable::default_locale():Translatable::default_lang());
                 
                 $this->owner->redirect(preg_replace('/^'.preg_quote($language, '/').'\//', $default.'/', $url), 301);
             }
@@ -56,7 +56,7 @@ class MultilingualControllerExtension extends Extension {
         
         //Detect the locale
         if($locale=MultilingualRootURLController::detect_browser_locale()) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+            if(MultilingualRootURLController::config()->UseLocaleURL) {
                 $language=$locale;
             }else {
                 $language=i18n::get_lang_from_locale($locale);
@@ -79,7 +79,7 @@ class MultilingualControllerExtension extends Extension {
      * @see Controller::Link()
      */
     public function MultilingualLink() {
-        return Controller::join_links((Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? i18n::get_locale():i18n::get_lang_from_locale(i18n::get_locale())), get_class($this->owner)).'/';
+        return Controller::join_links((MultilingualRootURLController::config()->UseLocaleURL ? i18n::get_locale():i18n::get_lang_from_locale(i18n::get_locale())), get_class($this->owner)).'/';
     }
 }
 ?>

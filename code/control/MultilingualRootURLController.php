@@ -14,6 +14,7 @@ class MultilingualRootURLController extends RootURLController {
      */
     private static $UseDashLocale=false;
     
+    
     public function handleRequest(SS_HTTPRequest $request, DataModel $model=null) {
         self::$is_at_root=true;
         $this->setDataModel($model);
@@ -22,8 +23,8 @@ class MultilingualRootURLController extends RootURLController {
         $this->init();
         
         if($language=$request->param('Language')) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-                if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+            if(MultilingualRootURLController::config()->UseLocaleURL) {
+                if(MultilingualRootURLController::config()->UseDashLocale) {
                     //Language is missing a dash 404
                     if(strpos($language, '-')===false) {
                         //Locale not found 404
@@ -92,7 +93,7 @@ class MultilingualRootURLController extends RootURLController {
                 return $result;
             }else {
                 //URL Param Locale is not allowed so redirect to default
-                $this->redirect(Controller::join_links(Director::baseURL(), (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
+                $this->redirect(Controller::join_links(Director::baseURL(), (MultilingualRootURLController::config()->UseLocaleURL ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
                 
                 $this->popCurrent();
                 return $this->response;
@@ -102,8 +103,8 @@ class MultilingualRootURLController extends RootURLController {
         
         //No Locale Param so detect browser language and redirect
         if($locale=self::detect_browser_locale()) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-                if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+            if(MultilingualRootURLController::config()->UseLocaleURL) {
+                if(MultilingualRootURLController::config()->UseDashLocale) {
                     $language=str_replace('_', '-', strtolower($locale));
                 }else {
                     $language=$locale;
@@ -121,8 +122,8 @@ class MultilingualRootURLController extends RootURLController {
         }
         
         
-        if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+        if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->UseDashLocale) {
                 $language=str_replace('_', '-', strtolower(Translatable::default_locale()));
             }else {
                 $language=Translatable::default_locale();
@@ -143,7 +144,7 @@ class MultilingualRootURLController extends RootURLController {
      */
     public static function detect_browser_locale() {
         if($language=Cookie::get('language')) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+            if(MultilingualRootURLController::config()->UseLocaleURL) {
                 $locale=$language;
             }else {
                 $locale=i18n::get_locale_from_lang($language);
@@ -212,28 +213,6 @@ class MultilingualRootURLController extends RootURLController {
         }
         
         return false;
-    }
-    
-    /**
-     * Sets the whether to use the locale in the url or just the language
-     * @param {bool} $value True to use the full locale (i.e. en_US) in the url or just the language
-     * 
-     * @deprecated 3.2 Use the "MultilingualRootURLController.UseLocaleURL" config setting instead
-     */
-    public static function set_use_locale_url($value) {
-        Deprecation::notice('3.2', 'Use the "MultilingualRootURLController.UseLocaleURL" config setting instead');
-        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', $value);
-    }
-    
-    /**
-     * Sets the whether to use the locale in the url or just the language
-     * @return {bool} True to use the full locale (i.e. en_US) in the url or just the language
-     * 
-     * @deprecated 3.2 Use the "MultilingualRootURLController.UseLocaleURL" config setting instead
-     */
-    public static function get_use_locale_url() {
-        Deprecation::notice('3.2', 'Use the "MultilingualRootURLController.UseLocaleURL" config setting instead');
-        return Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
     }
 }
 ?>

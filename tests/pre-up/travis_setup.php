@@ -22,7 +22,7 @@ if(!file_exists("$targetPath/mysite/code/Page.php")) {
 
 $pageDOContent='
     public function Link($action=null) {
-        return Controller::join_links(Director::baseURL(), (Config::inst()->get(\'MultilingualRootURLController\', \'UseLocaleURL\') ? (Config::inst()->get(\'MultilingualRootURLController\', \'UseDashLocale\') ? str_replace(\'_\', \'-\', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)), $this->RelativeLink($action));
+        return Controller::join_links(Director::baseURL(), (MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace(\'_\', \'-\', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)), $this->RelativeLink($action));
     }
     
     public function RelativeLink($action=null) {
@@ -49,9 +49,9 @@ $pageControllerContent='
             unset($getVars[\'url\']);
 
             if($getVars) {
-                $url=(Config::inst()->get(\'MultilingualRootURLController\', \'UseLocaleURL\') ? (Config::inst()->get(\'MultilingualRootURLController\', \'UseDashLocale\') ? str_replace(\'_\', \'-\', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)).\'/?\'.http_build_query($getVars);
+                $url=(MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace(\'_\', \'-\', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)).\'/?\'.http_build_query($getVars);
             }else {
-                $url=(Config::inst()->get(\'MultilingualRootURLController\', \'UseLocaleURL\') ? (Config::inst()->get(\'MultilingualRootURLController\', \'UseDashLocale\') ? str_replace(\'_\', \'-\', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)).\'/\';
+                $url=(MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace(\'_\', \'-\', strtolower($this->Locale)):$this->Locale):i18n::get_lang_from_locale($this->Locale)).\'/\';
             }
 
             $this->redirect($url, 301);

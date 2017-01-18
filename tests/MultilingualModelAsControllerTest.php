@@ -35,11 +35,11 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         Translatable::enable_locale_filter();
         
         
-        $this->origLocaleRoutingEnabled=Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL');
-        Config::inst()->update('MultilingualRootURLController', 'UseLocaleURL', false);
+        $this->origLocaleRoutingEnabled=MultilingualRootURLController::config()->UseLocaleURL;
+        MultilingualRootURLController::config()->UseLocaleURL=false;
         
-        $this->origDashLocaleEnabled=Config::inst()->get('MultilingualRootURLController', 'UseDashLocale');
-        Config::inst()->update('MultilingualRootURLController', 'UseDashLocale', false);
+        $this->origDashLocaleEnabled=MultilingualRootURLController::config()->UseDashLocale;
+        MultilingualRootURLController::config()->UseDashLocale=false;
         
         $this->origAcceptLanguage=$_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='en-US,en;q=0.5';
@@ -64,8 +64,8 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     }
     
     public function tearDown() {
-        Config::inst()->update('MultilingualRootURLController', 'UseDashLocale', $this->origLocaleRoutingEnabled);
-        Config::inst()->update('MultilingualRootURLController', 'UseDashLocale', $this->origDashLocaleEnabled);
+        MultilingualRootURLController::config()->UseLocaleURL=$this->origLocaleRoutingEnabled;
+        MultilingualRootURLController::config()->UseDashLocale=$this->origDashLocaleEnabled;
         
         Translatable::set_current_locale($this->origCurrentLocale);
         Translatable::set_default_locale($this->origLocale);

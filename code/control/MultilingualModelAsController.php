@@ -13,8 +13,8 @@ class MultilingualModelAsController extends ModelAsController {
         $this->pushCurrent();
         
         //Get the local from the language param
-        if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseDashLocale')) {
+        if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->UseDashLocale) {
                 //Language is missing a dash 404
                 if(strpos($request->param('Language'), '-')===false) {
                     //Locale not found 404
@@ -124,7 +124,7 @@ class MultilingualModelAsController extends ModelAsController {
     
         // Enforce current language setting to the loaded SiteTree object
         if(class_exists('Translatable') && $sitetree->Locale) {
-            if(Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL')) {
+            if(MultilingualRootURLController::config()->UseLocaleURL) {
                 Cookie::set('language', $sitetree->Locale);
             }else {
                 Cookie::set('language', i18n::get_lang_from_locale($sitetree->Locale));

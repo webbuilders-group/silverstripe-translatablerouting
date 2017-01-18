@@ -9,7 +9,7 @@ class MultilingualSiteTreeExtension extends DataExtension {
         if($urlSegmentField) {
             $baseLink=Controller::join_links(
                                             Director::absoluteBaseURL(),
-                                            (Config::inst()->get('MultilingualRootURLController', 'UseLocaleURL') ? $this->owner->Locale:i18n::get_lang_from_locale($this->owner->Locale)).'/',
+                                            (MultilingualRootURLController::config()->UseLocaleURL ? $this->owner->Locale:i18n::get_lang_from_locale($this->owner->Locale)).'/',
                                             (SiteTree::config()->nested_urls && $this->owner->ParentID ? $this->owner->Parent()->RelativeLink(true):null)
                                         );
             
