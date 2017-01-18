@@ -3,7 +3,7 @@ class MultilingualControllerExtension extends Extension {
     /**
      * Handles enabling translations for controllers that are not pages
      */
-    public function onBeforeInit() {
+    public function onAfterInit() {
         //Bail for the root url controller and model as controller classes as they handle this internally, also disable for development admin and cms
         if($this->owner instanceof MultilingualRootURLController || $this->owner instanceof MultilingualModelAsController || $this->owner instanceof LeftAndMain || $this->owner instanceof DevelopmentAdmin || $this->owner instanceof TestRunner) {
             return;
@@ -26,7 +26,7 @@ class MultilingualControllerExtension extends Extension {
             }else if(strpos($request->param('Language'), '_')!==false) {
                 //Invalid format so redirect to the default
                 $url=$request->getURL(true);
-                $default=(MultilingualRootURLController::config()->UseLocaleURL ? Translatable::default_locale():Translatable::default_lang());
+                $default=(MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace('_', '-', strtolower(Translatable::default_locale())):Translatable::default_locale()):Translatable::default_lang());
                 
                 $this->owner->redirect(preg_replace('/^'.preg_quote($language, '/').'\//', $default.'/', $url), 301);
                 return;
@@ -45,7 +45,7 @@ class MultilingualControllerExtension extends Extension {
             }else {
                 //Unknown language so redirect to the default
                 $url=$request->getURL(true);
-                $default=(MultilingualRootURLController::config()->UseLocaleURL ? Translatable::default_locale():Translatable::default_lang());
+                $default=(MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace('_', '-', strtolower(Translatable::default_locale())):Translatable::default_locale()):Translatable::default_lang());
                 
                 $this->owner->redirect(preg_replace('/^'.preg_quote($language, '/').'\//', $default.'/', $url), 301);
             }
@@ -79,7 +79,7 @@ class MultilingualControllerExtension extends Extension {
      * @see Controller::Link()
      */
     public function MultilingualLink() {
-        return Controller::join_links((MultilingualRootURLController::config()->UseLocaleURL ? i18n::get_locale():i18n::get_lang_from_locale(i18n::get_locale())), get_class($this->owner)).'/';
+        return Controller::join_links((MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace('_', '-', strtolower(i18n::get_locale())):i18n::get_locale()):i18n::get_lang_from_locale(i18n::get_locale())), get_class($this->owner)).'/';
     }
 }
 ?>
