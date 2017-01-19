@@ -31,7 +31,7 @@ class MultilingualControllerExtension extends Extension {
                 }else {
                     $locale=$language;
                 }
-            }else if(strpos($request->param('Language'), '_')!==false && strpos($request->param('Language'), '-')!==false) {
+            }else if(strpos($request->param('Language'), '_')!==false || strpos($request->param('Language'), '-')!==false) {//If the url has a locale in it when the settings are off
                 //Invalid format so redirect to the default
                 $url=$request->getURL(true);
                 
@@ -49,7 +49,7 @@ class MultilingualControllerExtension extends Extension {
                 
                 $this->owner->redirect(preg_replace('/^'.preg_quote($language, '/').'\//', $default.'/', $url), 301);
                 return;
-            }else {
+            }else {//Potentially a language code
                 $locale=i18n::get_locale_from_lang($language);
             }
             

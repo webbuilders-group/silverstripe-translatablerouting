@@ -70,7 +70,7 @@ class MultilingualModelAsController extends ModelAsController {
                 
                 $locale=$request->param('Language');
             }
-        }else if(strpos($request->param('Language'), '_')!==false || strpos($request->param('Language'), '-')!==false) {//If the url has a locale in it
+        }else if(strpos($request->param('Language'), '_')!==false || strpos($request->param('Language'), '-')!==false) {//If the url has a locale in it when the settings are off
             //Locale not found 404
             if($response=ErrorPage::response_for(404)) {
                 return $response;

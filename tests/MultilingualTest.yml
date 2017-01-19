@@ -27,13 +27,13 @@ Page:
         Locale: "fr_CA"
     page1_fr:
         Title: "First Page"
-        URLSegment: "page1-fr-fr"
+        URLSegment: "page1-fr-ca"
         Locale: "fr_CA"
     page2_fr:
         Title: "Second Page"
-        URLSegment: "page2-fr-fr"
+        URLSegment: "page2-fr-ca"
         Locale: "fr_CA"
     page3_fr:
         Title: "Third Page"
-        URLSegment: "page3-fr-fr"
+        URLSegment: "page3-fr-ca"
         Locale: "fr_CA"

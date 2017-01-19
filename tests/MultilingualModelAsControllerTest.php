@@ -11,6 +11,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     private $origLocaleRoutingEnabled;
     private $origDashLocaleEnabled;
     private $origCountryOnly;
+    private $origFRSubtag;
     
     protected $autoFollowRedirection=false;
     
@@ -61,6 +62,10 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         $this->origi18nLocale=i18n::get_locale();
         i18n::set_locale('en_US');
         
+        //Workaround for setting the likely sub-tag of fr to fr_CA
+        $this->origFRSubtag=i18n::config()->likely_subtags['fr'];
+        Config::inst()->update('i18n', 'likely_subtags', array('fr'=>'fr_CA'));
+        
         $this->origAllowedLocales=Translatable::get_allowed_locales();
         Translatable::set_allowed_locales(array('en_US', 'fr_CA'));
         
@@ -75,6 +80,8 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         Translatable::set_current_locale($this->origCurrentLocale);
         Translatable::set_default_locale($this->origLocale);
         Translatable::set_allowed_locales($this->origAllowedLocales);
+        
+        Config::inst()->update('i18n', 'likely_subtags', array('fr'=>$this->origFRSubtag));
         
         i18n::set_locale($this->origi18nLocale);
         
@@ -140,6 +147,177 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         
         $this->assertEquals(false, MultilingualRootURLController::should_be_on_root($default));
         $this->assertEquals(true, MultilingualRootURLController::should_be_on_root($defaultFR));
+    }
+    
+    public function testEnglishRouting() {
+        //Get the top level page
+        $page=$this->objFromFixture('Page', 'page1');
+        
+        $response=$this->get('en/'.$page->URLSegment);
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Get the nested level page
+        $page=$this->objFromFixture('Page', 'nested');
+        
+        $response=$this->get('en/'.$page->RelativeLink());
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+    
+    public function testFrenchRouting() {
+        //Get the top level page
+        $page=$this->objFromFixture('Page', 'page1_fr');
+        
+        $response=$this->get('fr/'.$page->URLSegment);
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        //Get the nested level page
+        $page=$this->objFromFixture('Page', 'nested_fr');
+        
+        $response=$this->get('fr/'.$page->RelativeLink());
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+    
+    public function testEnglishLocaleRouting() {
+        //Enable locale urls
+        MultilingualRootURLController::config()->UseLocaleURL=true;
+        
+        //Get the top level page
+        $page=$this->objFromFixture('Page', 'page1');
+        
+        $response=$this->get('en_US/'.$page->URLSegment);
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Get the nested level page
+        $page=$this->objFromFixture('Page', 'nested');
+        
+        $response=$this->get('en_US/'.$page->RelativeLink());
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+    
+    public function testFrenchLocaleRouting() {
+        //Enable locale urls
+        MultilingualRootURLController::config()->UseLocaleURL=true;
+        
+        //Get the top level page
+        $page=$this->objFromFixture('Page', 'page1_fr');
+        
+        $response=$this->get('fr_CA/'.$page->URLSegment);
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Get the nested level page
+        $page=$this->objFromFixture('Page', 'nested_fr');
+        
+        $response=$this->get('fr_CA/'.$page->RelativeLink());
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+    
+    public function testEnglishDashLocaleRouting() {
+        //Enable dashed locale urls
+        MultilingualRootURLController::config()->UseLocaleURL=true;
+        MultilingualRootURLController::config()->UseDashLocale=true;
+        
+        //Get the top level page
+        $page=$this->objFromFixture('Page', 'page1');
+        
+        $response=$this->get('en-us/'.$page->URLSegment);
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Get the nested level page
+        $page=$this->objFromFixture('Page', 'nested');
+        
+        $response=$this->get('en-us/'.$page->RelativeLink());
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+    
+    public function testFrenchDashLocaleRouting() {
+        //Enable dashed locale urls
+        MultilingualRootURLController::config()->UseLocaleURL=true;
+        MultilingualRootURLController::config()->UseDashLocale=true;
+        
+        //Get the top level page
+        $page=$this->objFromFixture('Page', 'page1_fr');
+        
+        $response=$this->get('fr-ca/'.$page->URLSegment);
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Get the nested level page
+        $page=$this->objFromFixture('Page', 'nested_fr');
+        
+        $response=$this->get('fr-ca/'.$page->RelativeLink());
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+    
+    public function testCountryRouting() {
+        //Enable country only urls
+        MultilingualRootURLController::config()->use_country_only=true;
+        
+        //Get the top level page
+        $page=$this->objFromFixture('Page', 'page1');
+        
+        $response=$this->get('us/'.$page->URLSegment);
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Get the nested level page
+        $page=$this->objFromFixture('Page', 'nested');
+        
+        $response=$this->get('us/'.$page->RelativeLink());
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+    }
+    
+    public function testCanadaRouting() {
+        //Enable country only urls
+        MultilingualRootURLController::config()->use_country_only=true;
+        
+        //Get the top level page
+        $page=$this->objFromFixture('Page', 'page1_fr');
+        
+        $response=$this->get('ca/'.$page->URLSegment);
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Get the nested level page
+        $page=$this->objFromFixture('Page', 'nested_fr');
+        
+        $response=$this->get('ca/'.$page->RelativeLink());
+        
+        //Check response code
+        $this->assertEquals(200, $response->getStatusCode());
     }
 }
 ?>

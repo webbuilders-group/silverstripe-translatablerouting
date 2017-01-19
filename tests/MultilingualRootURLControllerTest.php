@@ -11,6 +11,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     private $origLocaleRoutingEnabled;
     private $origDashLocaleEnabled;
     private $origCountryOnly;
+    private $origFRSubtag;
     
     protected $autoFollowRedirection=false;
     
@@ -53,6 +54,10 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         $this->origi18nLocale=i18n::get_locale();
         i18n::set_locale('en_US');
         
+        //Workaround for setting the likely sub-tag of fr to fr_CA
+        $this->origFRSubtag=i18n::config()->likely_subtags['fr'];
+        Config::inst()->update('i18n', 'likely_subtags', array('fr'=>'fr_CA'));
+        
         $this->origAllowedLocales=Translatable::get_allowed_locales();
         Translatable::set_allowed_locales(array('en_US', 'fr_CA'));
         
@@ -69,6 +74,8 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         Translatable::set_allowed_locales($this->origAllowedLocales);
         
         i18n::set_locale($this->origi18nLocale);
+        
+        Config::inst()->update('i18n', 'likely_subtags', array('fr'=>$this->origFRSubtag));
         
         Cookie::force_expiry('language');
         

@@ -1,7 +1,5 @@
 <?php
 class MultilingualControllerTest extends FunctionalTest {
-    public static $fixture_file='MultilingualTest.yml';
-    
     private $origLocale;
     private $origCurrentLocale;
     private $origAllowedLocales;

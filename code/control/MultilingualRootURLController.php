@@ -88,7 +88,7 @@ class MultilingualRootURLController extends RootURLController {
                     
                     $locale=$language;
                 }
-            }else if(strpos($language, '_')!==false || strpos($language, '-')!==false) {//If the url has a locale in it
+            }else if(strpos($language, '_')!==false || strpos($language, '-')!==false) {//If the url has a locale in it when the settings are off
                 //Locale not found 404
                 if($response=ErrorPage::response_for(404)) {
                     return $response;
