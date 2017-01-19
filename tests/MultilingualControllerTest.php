@@ -141,6 +141,33 @@ class MultilingualControllerTest extends FunctionalTest {
     }
     
     /**
+     * Tests to see if the controller responds correctly if the county is in the url
+     */
+    public function testCountryInURL() {
+        //Enable locale urls
+        MultilingualRootURLController::config()->use_country_only=true;
+        
+        //Set accept language to french
+        $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
+        
+        
+        //Change the allowed locales to have fr_CA
+        Translatable::set_allowed_locales(array('en_US', 'fr_CA'));
+        
+        
+        //Get the root url
+        $response=$this->get('ca/multilingual-test-controller/');
+        
+        
+        //Ensure a 200 response
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Verify the response matches what is expected
+        $this->assertEquals('i18n: fr_CA|Translatable: fr_CA', $response->getBody());
+    }
+    
+    /**
      * Tests to see if the controller responds correctly if the language is in the url
      */
     public function testAutoDetectLanguage() {

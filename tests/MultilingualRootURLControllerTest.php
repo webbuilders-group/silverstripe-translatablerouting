@@ -54,7 +54,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         i18n::set_locale('en_US');
         
         $this->origAllowedLocales=Translatable::get_allowed_locales();
-        Translatable::set_allowed_locales(array('en_US', 'fr_FR'));
+        Translatable::set_allowed_locales(array('en_US', 'fr_CA'));
         
         MultilingualRootURLController::reset();
     }
@@ -156,9 +156,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         //Check the status make sure its a 301
         $this->assertEquals(301, $response->getStatusCode());
         
-        //Check location make sure its {siteroot}/fr_FR/
+        //Check location make sure its {siteroot}/fr_CA/
         $this->assertEquals(
-                            Controller::join_links(Director::baseURL().'fr_FR/'),
+                            Controller::join_links(Director::baseURL().'fr_CA/'),
                             $response->getHeader('Location')
                         );
     }
@@ -209,9 +209,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         //Check the status make sure its a 301
         $this->assertEquals(301, $response->getStatusCode());
         
-        //Check location make sure its {siteroot}/fr-fr/
+        //Check location make sure its {siteroot}/fr-ca/
         $this->assertEquals(
-                            Controller::join_links(Director::baseURL().'fr-fr/'),
+                            Controller::join_links(Director::baseURL().'fr-ca/'),
                             $response->getHeader('Location')
                         );
         
@@ -237,9 +237,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     public function testFrenchGetHomepageLink() {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
-        Translatable::set_default_locale('fr_FR');
-        Translatable::set_current_locale('fr_FR');
-        i18n::set_locale('fr_FR');
+        Translatable::set_default_locale('fr_CA');
+        Translatable::set_current_locale('fr_CA');
+        i18n::set_locale('fr_CA');
         
         $this->assertEquals('maison', MultilingualRootURLController::get_homepage_link());
     }
@@ -269,7 +269,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         $this->assertEquals(404, $response->getStatusCode());
     }
     
-    public function testGetFranceHomePage() {
+    public function testGetCanadaHomePage() {
         //Enable country urls
         MultilingualRootURLController::config()->use_country_only=true;
         
@@ -282,9 +282,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         //Check the status make sure its a 301
         $this->assertEquals(301, $response->getStatusCode());
         
-        //Check location make sure its {siteroot}/fr/
+        //Check location make sure its {siteroot}/ca/
         $this->assertEquals(
-                            Controller::join_links(Director::baseURL().'fr/'),
+                            Controller::join_links(Director::baseURL().'ca/'),
                             $response->getHeader('Location')
                         );
     }

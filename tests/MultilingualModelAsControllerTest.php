@@ -27,7 +27,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         }
         
         //Rewrite the french translation groups and publish french pages
-        $pagesFR=Page::get()->filter('Locale', 'fr_FR');
+        $pagesFR=Page::get()->filter('Locale', 'fr_CA');
         foreach($pagesFR as $index=>$page) {
             $page->addTranslationGroup($pages->offsetGet($index)->ID, true);
             $page->publish('Stage', 'Live');
@@ -62,7 +62,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         i18n::set_locale('en_US');
         
         $this->origAllowedLocales=Translatable::get_allowed_locales();
-        Translatable::set_allowed_locales(array('en_US', 'fr_FR'));
+        Translatable::set_allowed_locales(array('en_US', 'fr_CA'));
         
         MultilingualRootURLController::reset();
     }
@@ -131,9 +131,9 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     public function testFrenchShouldBeRoot() {
         //Set accept language to french
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
-        Translatable::set_default_locale('fr_FR');
-        Translatable::set_current_locale('fr_FR');
-        i18n::set_locale('fr_FR');
+        Translatable::set_default_locale('fr_CA');
+        Translatable::set_current_locale('fr_CA');
+        i18n::set_locale('fr_CA');
         
         $default=$this->objFromFixture('Page', 'home');
         $defaultFR=$this->objFromFixture('Page', 'home_fr');
