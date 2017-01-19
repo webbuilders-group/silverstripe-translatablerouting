@@ -263,12 +263,7 @@ class MultilingualRootURLController extends RootURLController {
      * @return {string} Can potentially return null if there were no matches
      */
     public static function get_locale_from_country($country) {
-        $allowedLocales=Translatable::get_allowed_locales();
-        $potentialLocales=preg_grep('/_'.preg_quote(strtoupper($country), '/').'$/', array_keys(i18n::config()->all_locales));
-        
-        
-        //Remove Locales that are not allowed
-        $potentialLocales=array_intersect($allowedLocales, $potentialLocales);
+        $potentialLocales=preg_grep('/_'.preg_quote(strtoupper($country), '/').'$/', Translatable::get_allowed_locales());
         
         
         //Verify there is only one match
