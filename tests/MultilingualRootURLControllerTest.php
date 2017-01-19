@@ -10,8 +10,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     private $origAcceptLanguage;
     private $origLocaleRoutingEnabled;
     private $origDashLocaleEnabled;
+    private $origCountryOnly;
     
-    protected $autoFollowRedirection = false;
+    protected $autoFollowRedirection=false;
     
     public function setUp() {
         parent::setUp();
@@ -27,6 +28,9 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         Translatable::enable_locale_filter();
         
         
+        $this->origCountryOnly=MultilingualRootURLController::config()->use_country_only;
+        MultilingualRootURLController::config()->use_country_only=false;
+        
         $this->origLocaleRoutingEnabled=MultilingualRootURLController::config()->UseLocaleURL;
         MultilingualRootURLController::config()->UseLocaleURL=false;
         
@@ -38,7 +42,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         
         $this->origCookieLocale=Cookie::get('language');
         Cookie::force_expiry('language');
-        Cookie::set('language', 'en');
+        Cookie::set('language', '');
         
         $this->origCurrentLocale=Translatable::get_current_locale();
         Translatable::set_current_locale('en_US');
@@ -56,6 +60,7 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
     }
     
     public function tearDown() {
+        MultilingualRootURLController::config()->use_country_only=$this->origCountryOnly;
         MultilingualRootURLController::config()->UseLocaleURL=$this->origLocaleRoutingEnabled;
         MultilingualRootURLController::config()->UseDashLocale=$this->origDashLocaleEnabled;
         
@@ -237,6 +242,51 @@ class MultilingualRootURLControllerTest extends FunctionalTest {
         i18n::set_locale('fr_FR');
         
         $this->assertEquals('maison', MultilingualRootURLController::get_homepage_link());
+    }
+    
+    public function testGetCountryHomePage() {
+        //Enable country urls
+        MultilingualRootURLController::config()->use_country_only=true;
+        
+        //Get the root url
+        $response=$this->get('');
+        
+        //Check the status make sure its a 301
+        $this->assertEquals(301, $response->getStatusCode());
+        
+        //Check location make sure its {siteroot}/us/
+        $this->assertEquals(
+                            Controller::join_links(Director::baseURL().'us/'),
+                            $response->getHeader('Location')
+                        );
+        
+        
+        
+        //Get the root url with the incorrect case
+        $response=$this->get('US/');
+        
+        //Check the status make sure its a 404
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+    
+    public function testGetFranceHomePage() {
+        //Enable country urls
+        MultilingualRootURLController::config()->use_country_only=true;
+        
+        //Set accept language to french
+        $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
+        
+        //Get the root url
+        $response=$this->get('');
+        
+        //Check the status make sure its a 301
+        $this->assertEquals(301, $response->getStatusCode());
+        
+        //Check location make sure its {siteroot}/fr/
+        $this->assertEquals(
+                            Controller::join_links(Director::baseURL().'fr/'),
+                            $response->getHeader('Location')
+                        );
     }
 }
 ?>

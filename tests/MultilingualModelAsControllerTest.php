@@ -10,6 +10,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     private $origAcceptLanguage;
     private $origLocaleRoutingEnabled;
     private $origDashLocaleEnabled;
+    private $origCountryOnly;
     
     protected $autoFollowRedirection=false;
     
@@ -35,6 +36,9 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         Translatable::enable_locale_filter();
         
         
+        $this->origCountryOnly=MultilingualRootURLController::config()->use_country_only;
+        MultilingualRootURLController::config()->use_country_only=false;
+        
         $this->origLocaleRoutingEnabled=MultilingualRootURLController::config()->UseLocaleURL;
         MultilingualRootURLController::config()->UseLocaleURL=false;
         
@@ -46,7 +50,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
         
         $this->origCookieLocale=Cookie::get('language');
         Cookie::force_expiry('language');
-        Cookie::set('language', 'en');
+        Cookie::set('language', '');
         
         $this->origCurrentLocale=Translatable::get_current_locale();
         Translatable::set_current_locale('en_US');
@@ -64,6 +68,7 @@ class MultilingualModelAsControllerTest extends FunctionalTest {
     }
     
     public function tearDown() {
+        MultilingualRootURLController::config()->use_country_only=$this->origCountryOnly;
         MultilingualRootURLController::config()->UseLocaleURL=$this->origLocaleRoutingEnabled;
         MultilingualRootURLController::config()->UseDashLocale=$this->origDashLocaleEnabled;
         

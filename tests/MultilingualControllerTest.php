@@ -9,21 +9,29 @@ class MultilingualControllerTest extends FunctionalTest {
     private $origCookieLocale;
     private $origAcceptLanguage;
     private $origLocaleRoutingEnabled;
+    private $origDashLocaleEnabled;
+    private $origCountryOnly;
     
     protected $autoFollowRedirection=false;
     
     public function setUp() {
         parent::setUp();
         
+        $this->origCountryOnly=MultilingualRootURLController::config()->use_country_only;
+        MultilingualRootURLController::config()->use_country_only=false;
+        
         $this->origLocaleRoutingEnabled=MultilingualRootURLController::config()->UseLocaleURL;
         MultilingualRootURLController::config()->UseLocaleURL=false;
+        
+        $this->origDashLocaleEnabled=MultilingualRootURLController::config()->UseDashLocale;
+        MultilingualRootURLController::config()->UseDashLocale=false;
         
         $this->origAcceptLanguage=$_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $_SERVER['HTTP_ACCEPT_LANGUAGE']='en-US,en;q=0.5';
         
         $this->origCookieLocale=Cookie::get('language');
         Cookie::force_expiry('language');
-        Cookie::set('language', 'en');
+        Cookie::set('language', '');
         
         $this->origCurrentLocale=Translatable::get_current_locale();
         Translatable::set_current_locale('en_US');
@@ -48,7 +56,9 @@ class MultilingualControllerTest extends FunctionalTest {
     }
     
     public function tearDown() {
+        MultilingualRootURLController::config()->use_country_only=$this->origCountryOnly;
         MultilingualRootURLController::config()->UseLocaleURL=$this->origLocaleRoutingEnabled;
+        MultilingualRootURLController::config()->UseDashLocale=$this->origDashLocaleEnabled;
         
         Translatable::set_current_locale($this->origCurrentLocale);
         Translatable::set_default_locale($this->origLocale);
