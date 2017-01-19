@@ -118,6 +118,29 @@ class MultilingualControllerTest extends FunctionalTest {
     }
     
     /**
+     * Tests to see if the controller responds correctly if the dashed locale is in the url
+     */
+    public function testDashLocaleInURL() {
+        //Enable locale urls
+        MultilingualRootURLController::config()->UseLocaleURL=true;
+        MultilingualRootURLController::config()->UseDashLocale=true;
+    
+        //Set accept language to french
+        $_SERVER['HTTP_ACCEPT_LANGUAGE']='fr-FR,fr;q=0.5';
+    
+        //Get the root url
+        $response=$this->get('fr-fr/multilingual-test-controller/');
+        
+        
+        //Ensure a 200 response
+        $this->assertEquals(200, $response->getStatusCode());
+        
+        
+        //Verify the response matches what is expected
+        $this->assertEquals('i18n: fr_FR|Translatable: fr_FR', $response->getBody());
+    }
+    
+    /**
      * Tests to see if the controller responds correctly if the language is in the url
      */
     public function testAutoDetectLanguage() {

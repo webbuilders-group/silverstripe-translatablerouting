@@ -24,7 +24,13 @@ class MultilingualControllerExtension extends Extension {
             if(MultilingualRootURLController::config()->use_country_only) {
                 $locale=MultilingualRootURLController::get_locale_from_country($language);
             }else if(MultilingualRootURLController::config()->UseLocaleURL) {
-                $locale=$language;
+                if(MultilingualRootURLController::config()->UseDashLocale) {
+                    $locale=explode('-', $request->param('Language'));
+                    $locale[1]=strtoupper($locale[1]);
+                    $locale=implode('_', $locale);
+                }else {
+                    $locale=$language;
+                }
             }else if(strpos($request->param('Language'), '_')!==false && strpos($request->param('Language'), '-')!==false) {
                 //Invalid format so redirect to the default
                 $url=$request->getURL(true);
