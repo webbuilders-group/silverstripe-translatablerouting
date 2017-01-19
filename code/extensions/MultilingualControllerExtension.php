@@ -21,12 +21,25 @@ class MultilingualControllerExtension extends Extension {
         if($request && $request->param('Language')) {
             $language=$request->param('Language');
             
-            if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->use_country_only) {
+                $locale=MultilingualRootURLController::get_locale_from_country($language);
+            }else if(MultilingualRootURLController::config()->UseLocaleURL) {
                 $locale=$language;
-            }else if(strpos($request->param('Language'), '_')!==false) {
+            }else if(strpos($request->param('Language'), '_')!==false && strpos($request->param('Language'), '-')!==false) {
                 //Invalid format so redirect to the default
                 $url=$request->getURL(true);
-                $default=(MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace('_', '-', strtolower(Translatable::default_locale())):Translatable::default_locale()):Translatable::default_lang());
+                
+                if(MultilingualRootURLController::config()->use_country_only) {
+                    $default=strtolower(preg_replace('/^(.*?)_(.*?)$/', '$2', Translatable::default_locale()));
+                }else if(MultilingualRootURLController::config()->UseLocaleURL) {
+                    if(MultilingualRootURLController::config()->UseDashLocale) {
+                        $default=str_replace('_', '-', strtolower(Translatable::default_locale()));
+                    }else {
+                        $default=Translatable::default_locale();
+                    }
+                }else {
+                    $default=Translatable::default_lang();
+                }
                 
                 $this->owner->redirect(preg_replace('/^'.preg_quote($language, '/').'\//', $default.'/', $url), 301);
                 return;
@@ -45,7 +58,18 @@ class MultilingualControllerExtension extends Extension {
             }else {
                 //Unknown language so redirect to the default
                 $url=$request->getURL(true);
-                $default=(MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace('_', '-', strtolower(Translatable::default_locale())):Translatable::default_locale()):Translatable::default_lang());
+                
+                if(MultilingualRootURLController::config()->use_country_only) {
+                    $default=strtolower(preg_replace('/^(.*?)_(.*?)$/', '$2', Translatable::default_locale()));
+                }else if(MultilingualRootURLController::config()->UseLocaleURL) {
+                    if(MultilingualRootURLController::config()->UseDashLocale) {
+                        $default=str_replace('_', '-', strtolower(Translatable::default_locale()));
+                    }else {
+                        $default=Translatable::default_locale();
+                    }
+                }else {
+                    $default=Translatable::default_lang();
+                }
                 
                 $this->owner->redirect(preg_replace('/^'.preg_quote($language, '/').'\//', $default.'/', $url), 301);
             }
@@ -79,7 +103,20 @@ class MultilingualControllerExtension extends Extension {
      * @see Controller::Link()
      */
     public function MultilingualLink() {
-        return Controller::join_links((MultilingualRootURLController::config()->UseLocaleURL ? (MultilingualRootURLController::config()->UseDashLocale ? str_replace('_', '-', strtolower(i18n::get_locale())):i18n::get_locale()):i18n::get_lang_from_locale(i18n::get_locale())), get_class($this->owner)).'/';
+        if(MultilingualRootURLController::config()->use_country_only) {
+            $i18nSegment=strtolower(preg_replace('/^(.*?)_(.*?)$/', '$2', Translatable::default_locale()));
+        }else if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->UseDashLocale) {
+                $i18nSegment=str_replace('_', '-', strtolower(i18n::get_locale()));
+            }else {
+                $i18nSegment=i18n::get_locale();
+            }
+        }else {
+            $i18nSegment=i18n::get_locale();
+        }
+        
+        
+        return Controller::join_links($i18nSegment.'/', get_class($this->owner)).'/';
     }
 }
 ?>

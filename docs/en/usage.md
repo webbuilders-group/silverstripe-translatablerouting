@@ -12,12 +12,16 @@ public function Link($action=null) {
     if(MultilingualRootURLController::config()->use_country_only) {
         $i18nSegment=strtolower(preg_replace('/^(.*?)_(.*?)$/', '$2', $this->Locale));
     }else if(MultilingualRootURLController::config()->UseLocaleURL) {
-        $i18nSegment=$this->Locale;
+        if(MultilingualRootURLController::config()->UseDashLocale) {
+            $i18nSegment=str_replace('_', '-', strtolower($this->Locale));
+        }else {
+            $i18nSegment=$this->Locale;
+        }
     }else {
         $i18nSegment=i18n::get_lang_from_locale($this->Locale);
     }
 
-    return Controller::join_links(Director::baseURL(), $i18nSegment, $this->RelativeLink($action));
+    return Controller::join_links(Director::baseURL(), $i18nSegment.'/', $this->RelativeLink($action));
 }
 
 /**
@@ -58,7 +62,11 @@ public function init() {
         if(MultilingualRootURLController::config()->use_country_only) {
             $i18nSegment=strtolower(preg_replace('/^(.*?)_(.*?)$/', '$2', $this->Locale));
         }else if(MultilingualRootURLController::config()->UseLocaleURL) {
-            $i18nSegment=$this->Locale;
+            if(MultilingualRootURLController::config()->UseDashLocale) {
+                $i18nSegment=str_replace('_', '-', strtolower($this->Locale));
+            }else {
+                $i18nSegment=$this->Locale;
+            }
         }else {
             $i18nSegment=i18n::get_lang_from_locale($this->Locale);
         }
