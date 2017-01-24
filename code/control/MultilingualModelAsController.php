@@ -148,7 +148,7 @@ class MultilingualModelAsController extends ModelAsController {
     
         // Enforce current language setting to the loaded SiteTree object
         if(class_exists('Translatable') && $sitetree->Locale) {
-            if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->UseLocaleURL || MultilingualRootURLController::config()->use_country_only) {
                 Cookie::set('language', $sitetree->Locale);
             }else {
                 Cookie::set('language', i18n::get_lang_from_locale($sitetree->Locale));

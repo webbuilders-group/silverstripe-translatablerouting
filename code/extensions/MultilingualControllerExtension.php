@@ -86,7 +86,7 @@ class MultilingualControllerExtension extends Extension {
         
         //Detect the locale
         if($locale=MultilingualRootURLController::detect_browser_locale()) {
-            if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->UseLocaleURL || MultilingualRootURLController::config()->use_country_only) {
                 $language=$locale;
             }else {
                 $language=i18n::get_lang_from_locale($locale);

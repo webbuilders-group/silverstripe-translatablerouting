@@ -137,7 +137,7 @@ class MultilingualRootURLController extends RootURLController {
         if($locale=self::detect_browser_locale()) {
             if(MultilingualRootURLController::config()->use_country_only) {
                 $language=$locale;
-            }else if(MultilingualRootURLController::config()->UseLocaleURL) {
+            }else if(MultilingualRootURLController::config()->UseLocaleURL || MultilingualRootURLController::config()->use_country_only) {
                 if(MultilingualRootURLController::config()->UseDashLocale) {
                     $language=str_replace('_', '-', strtolower($locale));
                 }else {
@@ -186,7 +186,7 @@ class MultilingualRootURLController extends RootURLController {
      */
     public static function detect_browser_locale() {
         if($language=Cookie::get('language')) {
-            if(MultilingualRootURLController::config()->UseLocaleURL) {
+            if(MultilingualRootURLController::config()->UseLocaleURL || MultilingualRootURLController::config()->use_country_only) {
                 $locale=$language;
             }else {
                 $locale=i18n::get_locale_from_lang($language);
