@@ -102,7 +102,7 @@ class MultilingualRootURLController extends RootURLController {
             }
             
             if(in_array($locale, Translatable::get_allowed_locales())) {
-                Cookie::set('language', $language);
+                Cookie::set('language', $locale);
                 
                 Translatable::set_current_locale($locale);
                 i18n::set_locale($locale);
@@ -148,7 +148,7 @@ class MultilingualRootURLController extends RootURLController {
             }
             
             
-            Cookie::set('language', $language);
+            Cookie::set('language', $locale);
             
             
             //For country only the language code in the url should be just the country code
@@ -185,13 +185,7 @@ class MultilingualRootURLController extends RootURLController {
      * @return {string} The matching locale, or null if none could be determined
      */
     public static function detect_browser_locale() {
-        if($language=Cookie::get('language')) {
-            if(MultilingualRootURLController::config()->UseLocaleURL || MultilingualRootURLController::config()->use_country_only) {
-                $locale=$language;
-            }else {
-                $locale=i18n::get_locale_from_lang($language);
-            }
-            
+        if($locale=Cookie::get('language')) {
             if(in_array($locale, Translatable::get_allowed_locales())) {
                 return $locale;
             }else {

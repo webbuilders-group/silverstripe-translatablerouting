@@ -55,7 +55,7 @@ class MultilingualControllerExtension extends Extension {
             
             if(in_array($locale, Translatable::get_allowed_locales())) {
                 //Set the language cookie
-                Cookie::set('language', $language);
+                Cookie::set('language', $locale);
                 
                 
                 //Set the various locales
@@ -94,7 +94,7 @@ class MultilingualControllerExtension extends Extension {
             
             
             //Set the language cookie
-            Cookie::set('language', $language);
+            Cookie::set('language', $locale);
             
             
             //Set the various locales
