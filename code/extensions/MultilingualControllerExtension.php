@@ -11,7 +11,7 @@ class MultilingualControllerExtension extends Extension {
 
 
         //Bail for pages since this would have been handled by MultilingualModelAsController, we're assuming that data has not been set to a page by other code
-        if(method_exists($this->owner, 'data') && $this->owner->data() instanceof SiteTree) {
+        if(method_exists($this->owner, 'data') && $this->owner->data() instanceof DataObject && $this->owner->data()->exists()) {
             return;
         }
         
