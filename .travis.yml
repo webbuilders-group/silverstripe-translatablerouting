@@ -6,7 +6,7 @@ sudo: false
 
 notifications:
   email:
-    - devs@webbuildersgroup.com
+    secure: TNv7WYCJ1ei3wgoXtNM+/Je4ZU7fgcUSsAUQnjC8h2MIE0ImwxPC2xt5t6BR8Mi6XrPCBQ1aRjAvhSFGdYcfhWDJwU0Nq6BfynVwE4OR5/KNhZ9TvMlCQ+eRQD8qJLNqe2MWxMZcdlbrk0rNEhTDcPn3b6dz9Zuji4woe5wksxA=
 
 env:
  - DB=MYSQL CORE_RELEASE=3.5
