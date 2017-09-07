@@ -35,26 +35,26 @@ class MultilingualRootURLController extends RootURLController {
                 $locale=self::get_locale_from_country($request->param('Language'));
                 if(empty($locale)) {
                     //Locale not found 404
-                    if($response=ErrorPage::response_for(404)) {
-                        return $response;
-                    }else {
+                    try {
                         $this->httpError(404, 'The requested page could not be found.');
+                    }catch(SS_HTTPResponse_Exception $responseException) {
+                        $result=$responseException->getResponse();
                     }
                     
-                    return $this->response;
+                    return $result;
                 }
             }else if(MultilingualRootURLController::config()->UseLocaleURL) {
                 if(MultilingualRootURLController::config()->UseDashLocale) {
                     //Language is missing a dash 404
                     if(strpos($language, '-')===false) {
                         //Locale not found 404
-                        if($response=ErrorPage::response_for(404)) {
-                            return $response;
-                        }else {
+                        try {
                             $this->httpError(404, 'The requested page could not be found.');
+                        }catch(SS_HTTPResponse_Exception $responseException) {
+                            $result=$responseException->getResponse();
                         }
                         
-                        return $this->response;
+                        return $result;
                     }
                 
                     $locale=explode('-', $language);
@@ -63,13 +63,13 @@ class MultilingualRootURLController extends RootURLController {
                     //Make sure that the language is all lowercase
                     if($language==implode('-', $locale)) {
                         //Locale not found 404
-                        if($response=ErrorPage::response_for(404)) {
-                            return $response;
-                        }else {
+                        try {
                             $this->httpError(404, 'The requested page could not be found.');
+                        }catch(SS_HTTPResponse_Exception $responseException) {
+                            $result=$responseException->getResponse();
                         }
                         
-                        return $this->response;
+                        return $result;
                     }
                     
                     $locale=implode('_', $locale);
@@ -77,26 +77,26 @@ class MultilingualRootURLController extends RootURLController {
                     //Language is missing an underscore 404
                     if(strpos($language, '_')===false) {
                         //Locale not found 404
-                        if($response=ErrorPage::response_for(404)) {
-                            return $response;
-                        }else {
+                        try {
                             $this->httpError(404, 'The requested page could not be found.');
+                        }catch(SS_HTTPResponse_Exception $responseException) {
+                            $result=$responseException->getResponse();
                         }
                         
-                        return $this->response;
+                        return $result;
                     }
                     
                     $locale=$language;
                 }
             }else if(strpos($language, '_')!==false || strpos($language, '-')!==false) {//If the url has a locale in it when the settings are off
                 //Locale not found 404
-                if($response=ErrorPage::response_for(404)) {
-                    return $response;
-                }else {
+                try {
                     $this->httpError(404, 'The requested page could not be found.');
+                }catch(SS_HTTPResponse_Exception $responseException) {
+                    $result=$responseException->getResponse();
                 }
                 
-                return $this->response;
+                return $result;
             }else {//Potentially a language code
                 $locale=i18n::get_locale_from_lang($language);
             }
@@ -198,11 +198,11 @@ class MultilingualRootURLController extends RootURLController {
         if(empty($inputLocales)) {
             return null;
         }
-    
+        
         // Generate mapping of priority => list of languages at this priority
         // break up string into pieces (languages and q factors)
         preg_match_all('/(?<code>[a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(?<priority>1|0\.[0-9]+))?/i', $inputLocales, $parsedLocales);
-    
+        
         $prioritisedLocales=array();
         if(count($parsedLocales['code'])) {
             // create a list like "en" => 0.8
