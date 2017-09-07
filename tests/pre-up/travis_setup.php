@@ -51,9 +51,7 @@ $pageDOContent='
 
         return Controller::join_links($base, \'/\', $action);
     }
-}
-
-class Page_';
+}';
 
 $pageControllerContent='
         if($this->dataRecord && $this->dataRecord instanceof SiteTree && MultilingualRootURLController::should_be_on_root($this->dataRecord) && (!isset($this->urlParams[\'Action\']) || !$this->urlParams[\'Action\']) && !$_POST && !$_FILES && !$this->redirectedTo()) {
@@ -83,11 +81,21 @@ $pageControllerContent='
             return;
         }';
 
+        
+//Update Page.php
 $pageContents=file_get_contents("$targetPath/mysite/code/Page.php");
-$pageContents=preg_replace('/\}(.*?)class Page_/s', $pageDOContent, $pageContents);
-$pageContents=preg_replace('/public function init\(\) \{(.*?)\}(.*?)\}/s', 'public function init() {$1 '.$pageControllerContent."\n}\n}", $pageContents);
+$pageContents=preg_replace('/\}/s', $pageDOContent, $pageContents);
 
 $f=fopen("$targetPath/mysite/code/Page.php", 'w');
+fwrite($f, $pageContents);
+fclose($f);
+
+
+//Update page controller content
+$pageContents=file_get_contents("$targetPath/mysite/code/Page_Controller.php");
+$pageContents=preg_replace('/public function init\(\)(\s+)\{(.*?)\}(.*?)\}/s', 'public function init()$1{$2 '.$pageControllerContent."\n}\n}", $pageContents);
+
+$f=fopen("$targetPath/mysite/code/Page_Controller.php", 'w');
 fwrite($f, $pageContents);
 fclose($f);
 ?>
