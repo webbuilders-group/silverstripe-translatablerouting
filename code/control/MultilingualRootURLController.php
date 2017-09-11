@@ -36,7 +36,8 @@ class MultilingualRootURLController extends RootURLController {
                 if(empty($locale)) {
                     //Locale not found 404
                     try {
-                        $this->httpError(404, 'The requested page could not be found.');
+                        $response=ErrorPage::response_for(404);
+                        $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                     }catch(SS_HTTPResponse_Exception $responseException) {
                         $result=$responseException->getResponse();
                     }
@@ -49,7 +50,8 @@ class MultilingualRootURLController extends RootURLController {
                     if(strpos($language, '-')===false) {
                         //Locale not found 404
                         try {
-                            $this->httpError(404, 'The requested page could not be found.');
+                            $response=ErrorPage::response_for(404);
+                            $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                         }catch(SS_HTTPResponse_Exception $responseException) {
                             $result=$responseException->getResponse();
                         }
@@ -64,7 +66,8 @@ class MultilingualRootURLController extends RootURLController {
                     if($language==implode('-', $locale)) {
                         //Locale not found 404
                         try {
-                            $this->httpError(404, 'The requested page could not be found.');
+                            $response=ErrorPage::response_for(404);
+                            $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                         }catch(SS_HTTPResponse_Exception $responseException) {
                             $result=$responseException->getResponse();
                         }
@@ -78,7 +81,8 @@ class MultilingualRootURLController extends RootURLController {
                     if(strpos($language, '_')===false) {
                         //Locale not found 404
                         try {
-                            $this->httpError(404, 'The requested page could not be found.');
+                            $response=ErrorPage::response_for(404);
+                            $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                         }catch(SS_HTTPResponse_Exception $responseException) {
                             $result=$responseException->getResponse();
                         }
@@ -91,7 +95,8 @@ class MultilingualRootURLController extends RootURLController {
             }else if(strpos($language, '_')!==false || strpos($language, '-')!==false) {//If the url has a locale in it when the settings are off
                 //Locale not found 404
                 try {
-                    $this->httpError(404, 'The requested page could not be found.');
+                    $response=ErrorPage::response_for(404);
+                    $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                 }catch(SS_HTTPResponse_Exception $responseException) {
                     $result=$responseException->getResponse();
                 }

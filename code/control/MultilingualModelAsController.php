@@ -18,7 +18,8 @@ class MultilingualModelAsController extends ModelAsController {
             if(empty($locale)) {
                 //Locale not found 404
                 try {
-                    $this->httpError(404, 'The requested page could not be found.');
+                    $response=ErrorPage::response_for(404);
+                    $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                 }catch(SS_HTTPResponse_Exception $responseException) {
                     $result=$responseException->getResponse();
                 }
@@ -31,7 +32,8 @@ class MultilingualModelAsController extends ModelAsController {
                 if(strpos($request->param('Language'), '-')===false) {
                     //Locale not found 404
                     try {
-                        $this->httpError(404, 'The requested page could not be found.');
+                        $response=ErrorPage::response_for(404);
+                        $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                     }catch(SS_HTTPResponse_Exception $responseException) {
                         $result=$responseException->getResponse();
                     }
@@ -46,7 +48,8 @@ class MultilingualModelAsController extends ModelAsController {
                 if($request->param('Language')==implode('-', $locale)) {
                     //Locale not found 404
                     try {
-                        $this->httpError(404, 'The requested page could not be found.');
+                        $response=ErrorPage::response_for(404);
+                        $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                     }catch(SS_HTTPResponse_Exception $responseException) {
                         $result=$responseException->getResponse();
                     }
@@ -60,7 +63,8 @@ class MultilingualModelAsController extends ModelAsController {
                 if(strpos($request->param('Language'), '_')===false) {
                     //Locale not found 404
                     try {
-                        $this->httpError(404, 'The requested page could not be found.');
+                        $response=ErrorPage::response_for(404);
+                        $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
                     }catch(SS_HTTPResponse_Exception $responseException) {
                         $result=$responseException->getResponse();
                     }
@@ -73,7 +77,8 @@ class MultilingualModelAsController extends ModelAsController {
         }else if(strpos($request->param('Language'), '_')!==false || strpos($request->param('Language'), '-')!==false) {//If the url has a locale in it when the settings are off
             //Locale not found 404
             try {
-                $this->httpError(404, 'The requested page could not be found.');
+                $response=ErrorPage::response_for(404);
+                $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
             }catch(SS_HTTPResponse_Exception $responseException) {
                 $result=$responseException->getResponse();
             }
@@ -92,7 +97,8 @@ class MultilingualModelAsController extends ModelAsController {
         }else {
             //Locale not found 404
             try {
-                $this->httpError(404, 'The requested page could not be found.');
+                $response=ErrorPage::response_for(404);
+                $this->httpError(404, ($response ? $response:'The requested page could not be found.'));
             }catch(SS_HTTPResponse_Exception $responseException) {
                 $result=$responseException->getResponse();
             }
