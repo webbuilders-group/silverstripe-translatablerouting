@@ -129,8 +129,25 @@ class MultilingualRootURLController extends RootURLController {
                 $this->popCurrent();
                 return $result;
             }else {
+                $locale=Translatable::default_locale();
+                if(MultilingualRootURLController::config()->UseLocaleURL || MultilingualRootURLController::config()->use_country_only) {
+                    if(MultilingualRootURLController::config()->UseDashLocale) {
+                        $language=str_replace('_', '-', strtolower($locale));
+                    }else {
+                        $language=$locale;
+                    }
+                    
+                    //For country only the language code in the url should be just the country code
+                    if(MultilingualRootURLController::config()->use_country_only) {
+                        $language=strtolower(preg_replace('/^(.*?)_(.*?)$/', '$2', $language));
+                    }
+                }else {
+                    $language=Translatable::default_lang();
+                }
+                
+                
                 //URL Param Locale is not allowed so redirect to default
-                $this->redirect(Controller::join_links(Director::baseURL(), (MultilingualRootURLController::config()->UseLocaleURL ? Translatable::default_locale():Translatable::default_lang())).'/', 301);
+                $this->redirect(Controller::join_links(Director::baseURL(), $language).'/', 301);
                 
                 $this->popCurrent();
                 return $this->response;
@@ -169,11 +186,16 @@ class MultilingualRootURLController extends RootURLController {
         }
         
         
-        if(MultilingualRootURLController::config()->UseLocaleURL) {
+        if(MultilingualRootURLController::config()->UseLocaleURL || MultilingualRootURLController::config()->use_country_only) {
             if(MultilingualRootURLController::config()->UseDashLocale) {
                 $language=str_replace('_', '-', strtolower(Translatable::default_locale()));
             }else {
                 $language=Translatable::default_locale();
+            }
+            
+            //For country only the language code in the url should be just the country code
+            if(MultilingualRootURLController::config()->use_country_only) {
+                $language=strtolower(preg_replace('/^(.*?)_(.*?)$/', '$2', $language));
             }
         }else {
             $language=Translatable::default_lang();
